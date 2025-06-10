@@ -1,7 +1,7 @@
 # crawler/main.py
 
 import click
-from crawler.config import TARGET_DOMAIN
+from crawler.scanner.config import TARGET_DOMAIN
 
 @click.command()
 @click.option("--target", default=None, help="Domain to scan")
