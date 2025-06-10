@@ -1,7 +1,7 @@
 # tests/test_basic.py
 
 from click.testing import CliRunner
-from crawler.main import main
+from main import main
 
 def test_cli_no_args():
     runner = CliRunner()
