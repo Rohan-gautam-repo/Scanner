@@ -1,9 +1,19 @@
-# tests/test_basic.py
+# tests/test_crawler.py
 
-from click.testing import CliRunner
-from crawler.main import main
+import pytest
+from crawler.scanner.forms import extract_forms
+from bs4 import BeautifulSoup
 
-def test_cli_no_args():
-    runner = CliRunner()
-    result = runner.invoke(main, [])
-    assert "[+] Scanner would start against:" in result.stdout
+def test_extract_forms():
+    html = '''
+    <form action="/submit" method="post">
+        <input type="text" name="username" value="admin"/>
+        <input type="password" name="password"/>
+        <input type="submit" value="Login"/>
+    </form>
+    '''
+    forms = extract_forms(html)
+    assert len(forms) == 1
+    assert forms[0]['method'] == 'post'
+    assert forms[0]['action'] == '/submit'
+    assert any(inp['name'] == 'username' for inp in forms[0]['inputs'])
