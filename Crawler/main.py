@@ -1,3 +1,5 @@
+# main.py
+
 import os
 import json
 from scanner.crawler import WebCrawler
@@ -14,10 +16,18 @@ def main():
     crawler.crawl()
 
     links = crawler.get_links()
-    print(f"\n[+] {len(links)} links discovered.")
+    forms = crawler.get_forms()
 
-    # Save results using the new method
-    crawler.save_results()
+    os.makedirs("reports", exist_ok=True)
+
+    with open("reports/output.json", "w") as f:
+        json.dump({
+            "start_url": start_url,
+            "links": links,
+            "forms": forms
+        }, f, indent=2)
+
+    print(f"[+] Crawl completed. Results saved to reports/output.json")
 
 if __name__ == "__main__":
     main()
