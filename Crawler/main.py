@@ -1,16 +1,9 @@
-# crawler/main.py
+import requests
+from bs4 import BeautifulSoup
 
-import click
-from crawler.scanner.config import TARGET_DOMAIN
+url = "https://books.toscrape.com"
+response = requests.get(url)
 
-@click.command()
-@click.option("--target", default=None, help="Domain to scan")
-def main(target):
-    """
-    Entry point for the vulnerability scanner CLI.
-    """
-    domain = target or TARGET_DOMAIN
-    click.echo(f"[+] Scanner would start against: {domain}")
-
-if __name__ == "__main__":
-    main()
+soup = BeautifulSoup(response.text, "html.parser")
+for link in soup.find_all("a", href=True):
+    print(link['href'])
