@@ -1,54 +1,65 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
-import tldextract
-import time
+from scanner.utils import is_valid_url, get_domain
+import json
+import os
+from datetime import datetime
 
 class WebCrawler:
-    def __init__(self, base_url, max_depth=2, max_links=30, delay=0.5):
+    def __init__(self, base_url):
         self.base_url = base_url
         self.visited = set()
-        self.domain = self.extract_domain(base_url)
-        self.internal_links = []
-        self.max_depth = max_depth
-        self.max_links = max_links
-        self.delay = delay
+        self.domain = get_domain(base_url)
+        self.links = []
+        self.results = {
+            "base_url": base_url,
+            "crawl_time": None,
+            "total_links": 0,
+            "links": []
+        }
 
-    def extract_domain(self, url):
-        ext = tldextract.extract(url)
-        return f"{ext.domain}.{ext.suffix}"
-
-    def is_internal(self, url):
-        return self.extract_domain(url) == self.domain
-
-    def crawl(self, url=None, depth=0):
+    def crawl(self, url=None):
         if url is None:
             url = self.base_url
 
-        if url in self.visited or depth > self.max_depth:
+        if url in self.visited:
             return
 
-        if len(self.internal_links) >= self.max_links:
-            return
-
+        print(f"[+] Crawling: {url}")
         self.visited.add(url)
 
         try:
-            print(f"[*] Crawling ({depth}): {url}")
             response = requests.get(url, timeout=5)
+            if "text/html" not in response.headers.get("Content-Type", ""):
+                return
+
             soup = BeautifulSoup(response.text, "html.parser")
+            for tag in soup.find_all("a", href=True):
+                link = urljoin(url, tag['href'])
+                if is_valid_url(link, self.domain):
+                    if link not in self.visited:
+                        self.links.append(link)
+                        self.crawl(link)
 
-            for link in soup.find_all("a", href=True):
-                href = urljoin(url, link['href'])
-                parsed_href = urlparse(href).scheme + "://" + urlparse(href).netloc + urlparse(href).path
-
-                if self.is_internal(href) and parsed_href not in self.visited:
-                    self.internal_links.append(parsed_href)
-                    time.sleep(self.delay)
-                    self.crawl(parsed_href, depth + 1)
-
-        except Exception as e:
-            print(f"[!] Error crawling {url}: {e}")
+        except requests.RequestException as e:
+            print(f"[-] Request failed: {e}")
 
     def get_links(self):
-        return list(set(self.internal_links))
+        return self.links
+
+    def save_results(self):
+        # Create reports directory if it doesn't exist
+        os.makedirs("reports", exist_ok=True)
+        
+        # Update results dictionary
+        self.results["crawl_time"] = datetime.now().isoformat()
+        self.results["total_links"] = len(self.links)
+        self.results["links"] = self.links
+
+        # Save to JSON file
+        output_file = "reports/output.json"
+        with open(output_file, "w") as f:
+            json.dump(self.results, f, indent=4)
+        
+        print(f"[+] Results saved to {output_file}")
