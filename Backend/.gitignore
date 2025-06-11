@@ -1,0 +1,39 @@
+# Node.js dependencies
+/node_modules/
+
+# Firebase credentials
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# IDEs and editors
+.vscode/
+.idea/
+.DS_Store
+
+# Operating system files
+Thumbs.db
+ehthumbs.db
+
+# Optional: output or scan result directories
+/output/
+scanner/output/
+scanner/results/
+*.report
+
+# Optional: Python cache files (if you use Python scripts in scanner/)
+scanner/__pycache__/
+scanner/*.pyc
+scanner/*.pyo
+scanner/*.pyd
