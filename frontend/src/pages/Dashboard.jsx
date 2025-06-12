@@ -83,11 +83,56 @@ const Dashboard = () => {
 
       {/* AI Assistant */}
       {activeTab === 'ai' && (
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1 flex flex-col gap-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-0">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Scans</h2>
+              <ul className="space-y-2">
+                {/*
+                  This is a static list for demonstration. In a real application,
+                  this data would be fetched from an API or derived from the scan results.
+                */}
+                {/*
+                  Example scan data structure:
+                  { date: 'Jun 10, 2025', target: 'example.com', issues: 18 }
+                */}
+                {/*
+                  Map through the scan data and display each scan in the list.
+                  Add appropriate keys and values based on the actual data structure.
+                */}
+                {/*
+                  Example:
+                  {scanData.map((scan, index) => (
+                    <li key={index} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                      <div className="flex justify-between">
+                        <span className="font-medium">{scan.target}</span>
+                        <span className="text-red-500">{scan.issues} issues</span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">{scan.date}</div>
+                    </li>
+                  ))}
+                */}
+                {/*
+                  Example scan data for static display:
+                  { [
+                      { date: 'Jun 10, 2025', target: 'example.com', issues: 18 },
+                      { date: 'Jun 08, 2025', target: 'testsite.org', issues: 7 },
+                      { date: 'Jun 05, 2025', target: 'secureapp.net', issues: 3 }
+                    ].map((scan, index) => (
+                      <li key={index} className="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                        <div className="flex justify-between">
+                          <span className="font-medium">{scan.target}</span>
+                          <span className="text-red-500">{scan.issues} issues</span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">{scan.date}</div>
+                      </li>
+                    )) }
+                */}
+              </ul>
+            </div>
             <ScanSummary />
           </div>
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2 flex flex-col">
             <AIReportAssistant />
           </div>
         </div>
