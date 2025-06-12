@@ -36,29 +36,27 @@ const ScanSummary = ({ stats = {} }) => {
       color: 'bg-green-500',
     },
   ];
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => (
         <div 
           key={index}
-          className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
+          className="bg-zinc-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-zinc-700"
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-500 text-sm font-medium">{card.title}</p>
-              <p className="text-3xl font-bold mt-2">{card.value}</p>
-            </div>
-            <div className={`${card.color} text-white p-3 rounded-xl`}>
+              <p className="text-zinc-400 text-sm font-medium">{card.title}</p>
+              <p className="text-2xl font-bold mt-2 text-white">{card.value}</p>
+            </div>            <div className={`${card.color} text-white p-3 rounded-xl shadow-lg`}>
               <span className="text-xl">{card.icon}</span>
             </div>
           </div>
           <div className="mt-4 flex items-center">
-            <span className="text-green-500 flex items-center text-xs">
+            <span className="text-green-400 flex items-center text-xs">
               <span className="mr-1">↑</span>
               <span>12%</span>
             </span>
-            <span className="text-xs text-gray-500 ml-2">Since last scan</span>
+            <span className="text-xs text-zinc-400 ml-2">Since last scan</span>
           </div>
         </div>
       ))}
