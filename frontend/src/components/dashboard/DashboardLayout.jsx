@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gradient-to-br from-gray-100 to-gray-200">
       {/* Sidebar */}
       <Sidebar />
       
