@@ -1,0 +1,105 @@
+[
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/login",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "username",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "password",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:31"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/search",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "query",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/profile",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "id",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/register",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "username",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "password",
+                "value": ""
+            },
+            {
+                "type": "email",
+                "name": "email",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/admin",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "admin_id",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "admin_pass",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/update_profile",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "user_id",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "new_email",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-13 10:56:32"
+    }
+]
