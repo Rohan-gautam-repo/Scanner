@@ -10,10 +10,10 @@ const Navbar = ({ onNavigate }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const navigationItems = [
-    { name: 'Dashboard', icon: '📊', path: '/dashboard' },
-    { name: 'Scan Details', icon: '🔍', path: '/dashboard/scan-details' },
-    { name: 'AI Assistant', icon: '🤖', path: '/dashboard/ai-assistant' },
-    { name: 'Settings', icon: '⚙️', path: '/dashboard/settings' },
+    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Scan Details', path: '/dashboard/scan-details' },
+    { name: 'AI Assistant', path: '/dashboard/ai-assistant' },
+    { name: 'Settings', path: '/dashboard/settings' },
   ];
 
   const handleLogout = async () => {
@@ -40,14 +40,14 @@ const Navbar = ({ onNavigate }) => {
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
-                  to={item.path}                  className={`px-3 py-2 rounded-md text-sm font-medium flex items-center ${
+                  to={item.path}
+                  className={`px-3 py-2 rounded-md text-sm font-medium flex items-center ${
                     location.pathname === item.path || 
                     (item.path === '/dashboard' && location.pathname === '/dashboard')
                       ? 'bg-violet-600 text-white font-bold'
                       : 'text-violet-100 hover:bg-zinc-800 hover:text-white'
                   } transition-colors duration-200`}
                 >
-                  <span className="mr-1">{item.icon}</span>
                   <span>{item.name}</span>
                 </Link>
               ))}
@@ -81,14 +81,14 @@ const Navbar = ({ onNavigate }) => {
           {navigationItems.map((item) => (
             <Link
               key={item.name}
-              to={item.path}              className={`px-3 py-2 m-1 rounded-md text-sm font-medium flex items-center ${
+              to={item.path}
+              className={`px-3 py-2 m-1 rounded-md text-sm font-medium flex items-center ${
                 location.pathname === item.path || 
                 (item.path === '/dashboard' && location.pathname === '/dashboard')
                   ? 'bg-violet-600 text-white font-bold'
                   : 'text-violet-100 hover:bg-zinc-800 hover:text-white'
               } transition-colors duration-200`}
             >
-              <span className="mr-1">{item.icon}</span>
               <span>{item.name}</span>
             </Link>
           ))}
