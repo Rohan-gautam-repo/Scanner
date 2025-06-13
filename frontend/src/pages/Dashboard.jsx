@@ -39,37 +39,14 @@ const Dashboard = () => {
                 onClick={navigateToScanDetails}
                 className="bg-zinc-800/80 border border-violet-500/20 text-white px-5 py-2.5 rounded-full flex items-center hover:bg-zinc-700/80 transition-all shadow hover:shadow-violet-600/10"
               >
-                <span className="mr-2">📊</span>
                 View All Scans
               </button>
               <button
                 onClick={() => setShowScanModal(true)}
                 className="bg-gradient-to-r from-violet-600 to-purple-700 text-white px-5 py-2.5 rounded-full flex items-center hover:opacity-90 transition-colors shadow-lg shadow-violet-600/20"
               >
-                <span className="mr-2">🔍</span>
                 Start New Scan
               </button>
-            </div>
-          </div>
-          
-          <div className="mb-6">
-            <div className="bg-zinc-900/50 border border-violet-500/10 rounded-lg p-4 shadow-inner">
-              <div className="flex items-start">
-                <div className="mr-4 p-2 bg-violet-600/20 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-violet-300">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M12 16v-4"></path>
-                    <path d="M12 8h.01"></path>
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-violet-200 mb-1">Welcome to the New Dashboard</h3>
-                  <p className="text-violet-300/80">
-                    Our dashboard has been updated with a modern design. You can now view detailed scan results and 
-                    export reports from the Scan Details section.
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
 
