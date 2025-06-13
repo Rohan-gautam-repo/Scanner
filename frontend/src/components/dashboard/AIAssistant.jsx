@@ -31,58 +31,54 @@ const AIAssistant = () => {
       setLoading(false);
       setQuery('');
     }, 1500);
-  };
-  return (
+  };  return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-white mb-6">AI Security Assistant</h1>
+      <h1 className="text-2xl font-bold gradient-text mb-6">AI Security Assistant</h1>
       
       <div className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
-          <div className="bg-zinc-800 rounded-2xl shadow-lg p-6 mb-6 border border-zinc-700">
-            <div className="border-b border-zinc-700 pb-4 mb-4">
-              <h2 className="text-xl font-semibold text-white">Conversation</h2>
+          <div className="glass-card p-6 mb-6">
+            <div className="border-b border-violet-500/20 pb-4 mb-4">
+              <h2 className="text-xl font-semibold text-violet-200">Conversation</h2>
             </div>
             
             <div className="space-y-4 mb-4 max-h-[400px] overflow-y-auto p-1">              {conversation.map((msg, index) => (
                 <div 
                   key={index}
                   className={`flex ${msg.role === 'assistant' ? 'justify-start' : 'justify-end'}`}
-                >
-                  <div className={`max-w-[80%] p-3 rounded-xl ${
+                >                  <div className={`max-w-[80%] p-3 rounded-xl ${
                     msg.role === 'assistant' 
-                      ? 'bg-zinc-700 text-zinc-200' 
-                      : 'bg-violet-600 text-white'
+                      ? 'bg-zinc-800/80 text-white shadow-lg' 
+                      : 'bg-violet-600 text-white shadow-lg'
                   }`}>
                     {msg.message}
                   </div>
                 </div>
               ))}
                 {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-zinc-700 text-zinc-200 p-3 rounded-xl max-w-[80%]">
+                <div className="flex justify-start">                  <div className="bg-zinc-800/80 text-white p-3 rounded-xl max-w-[80%] shadow-lg">
                     <div className="flex space-x-2">
-                      <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
               <form onSubmit={handleSubmit}>
-              <div className="flex">
-                <input
+              <div className="flex">                <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="flex-1 p-3 bg-zinc-900 border border-zinc-700 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-violet-400 text-white"
+                  className="flex-1 p-3 bg-zinc-900/50 border border-violet-500/20 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-violet-400/50 text-white"
                   placeholder="Ask about your scan results or security advice..."
                   disabled={loading}
                 />
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-violet-600 text-white px-4 py-2 rounded-r-xl hover:bg-violet-700 transition-colors"
+                  className="bg-gradient-to-r from-violet-600 to-purple-700 text-white px-4 py-2 rounded-r-xl hover:opacity-90 transition-all"
                 >
                   Send
                 </button>
@@ -90,10 +86,9 @@ const AIAssistant = () => {
             </form>
           </div>
         </div>
-        
-        <div className="md:col-span-1">
-          <div className="bg-zinc-800 rounded-2xl shadow-lg p-6 mb-6 border border-zinc-700">
-            <h3 className="font-bold text-lg mb-4 text-white">Suggested Questions</h3>
+          <div className="md:col-span-1">
+          <div className="glass-card p-6 mb-6">
+            <h3 className="font-bold text-lg mb-4 text-violet-200">Suggested Questions</h3>
             <ul className="space-y-2">
               {[
                 "Explain the XSS vulnerabilities found",
@@ -103,38 +98,35 @@ const AIAssistant = () => {
                 "What security headers should I add?"
               ].map((question, index) => (
                 <li key={index}>
-                  <button
-                    onClick={() => setQuery(question)}
-                    className="text-left text-violet-400 hover:text-violet-300 w-full p-2 text-sm hover:bg-zinc-700 rounded-lg transition-colors"
+                  <button                    onClick={() => setQuery(question)}
+                    className="text-left text-violet-300 hover:text-white w-full p-2 text-sm hover:bg-violet-600/20 rounded-lg transition-colors"
                   >
                     {question}
                   </button>
                 </li>
               ))}
             </ul>
-          </div>
-            <div className="bg-zinc-800 rounded-2xl shadow-lg p-6 border border-zinc-700">
-            <h3 className="font-bold text-lg mb-4 text-white">Recent Scans</h3>
+          </div>            <div className="glass-card p-6">
+            <h3 className="font-bold text-lg mb-4 text-violet-200">Recent Scans</h3>
             <ul className="space-y-2">
               {[
                 { date: 'Jun 10, 2025', target: 'example.com', issues: 18 },
                 { date: 'Jun 08, 2025', target: 'testsite.org', issues: 7 },
                 { date: 'Jun 05, 2025', target: 'secureapp.net', issues: 3 }
               ].map((scan, index) => (
-                <li key={index} className="p-2 hover:bg-zinc-700 rounded-lg transition-colors cursor-pointer">
-                  <div className="flex justify-between">
+                <li key={index} className="p-2 hover:bg-zinc-700 rounded-lg transition-colors cursor-pointer">                  <div className="flex justify-between">
                     <span className="font-medium text-sm text-white">{scan.target}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
+                    <span className={`text-xs px-2 py-1 rounded-full shadow-sm ${
                       scan.issues > 10 
-                        ? 'bg-red-900 text-red-200 border border-red-700' 
+                        ? 'bg-red-900/60 text-red-200 border border-red-700/50 backdrop-blur-sm' 
                         : scan.issues > 5 
-                          ? 'bg-yellow-900 text-yellow-200 border border-yellow-700' 
-                          : 'bg-green-900 text-green-200 border border-green-700'
+                          ? 'bg-amber-800/60 text-amber-200 border border-amber-700/50 backdrop-blur-sm' 
+                          : 'bg-emerald-900/60 text-emerald-200 border border-emerald-700/50 backdrop-blur-sm'
                     }`}>
                       {scan.issues} issues
                     </span>
                   </div>
-                  <div className="text-xs text-zinc-500 mt-1">{scan.date}</div>
+                  <div className="text-xs text-violet-200/70 mt-1">{scan.date}</div>
                 </li>
               ))}
             </ul>
