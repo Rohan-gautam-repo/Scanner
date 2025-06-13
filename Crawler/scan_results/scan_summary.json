@@ -1,0 +1,22 @@
+{
+    "scan_info": {
+        "start_time": "2025-06-13T10:56:31.939946",
+        "end_time": "2025-06-13T10:56:32.319609",
+        "duration": 0.379663,
+        "total_urls_scanned": 4,
+        "total_vulnerabilities": 3,
+        "total_links_scanned": 4,
+        "total_forms_scanned": 6
+    },
+    "vulnerabilities_by_type": {
+        "missing_security_headers": 3
+    },
+    "errors_by_type": {
+        "client_error": 1
+    },
+    "performance_metrics": {
+        "avg_response_time": 0.013531,
+        "min_response_time": 0.003029,
+        "max_response_time": 0.019283
+    }
+}

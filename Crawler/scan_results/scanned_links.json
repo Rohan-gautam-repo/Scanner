@@ -1,0 +1,22 @@
+[
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/admin",
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/",
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/profile",
+        "timestamp": "2025-06-13 10:56:32"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/search",
+        "timestamp": "2025-06-13 10:56:32"
+    }
+]
