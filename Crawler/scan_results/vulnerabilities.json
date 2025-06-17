@@ -1,19 +1,8 @@
 [
     {
         "type": "missing_security_headers",
-        "url": "http://127.0.0.1:5000/search",
-        "timestamp": "2025-06-13 11:24:35",
-        "details": {
-            "description": "No security headers found",
-            "recommendation": "Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.",
-            "severity": "Medium"
-        },
-        "file": "search"
-    },
-    {
-        "type": "missing_security_headers",
         "url": "http://127.0.0.1:5000/profile",
-        "timestamp": "2025-06-13 11:24:35",
+        "timestamp": "2025-06-17 18:59:51",
         "details": {
             "description": "No security headers found",
             "recommendation": "Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.",
@@ -23,8 +12,19 @@
     },
     {
         "type": "missing_security_headers",
+        "url": "http://127.0.0.1:5000/search",
+        "timestamp": "2025-06-17 18:59:51",
+        "details": {
+            "description": "No security headers found",
+            "recommendation": "Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.",
+            "severity": "Medium"
+        },
+        "file": "search"
+    },
+    {
+        "type": "missing_security_headers",
         "url": "http://127.0.0.1:5000/",
-        "timestamp": "2025-06-13 11:24:35",
+        "timestamp": "2025-06-17 18:59:51",
         "details": {
             "description": "No security headers found",
             "recommendation": "Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.",

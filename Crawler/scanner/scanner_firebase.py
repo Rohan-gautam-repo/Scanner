@@ -4,6 +4,11 @@ import os
 import json
 import uuid
 from datetime import datetime
+import sys
+import os.path
+
+# Add the parent directory to sys.path to find the firebase module
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from firebase.firebase_service import FirebaseService
 
 class ScannerFirebase:

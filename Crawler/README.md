@@ -31,9 +31,9 @@ pip install -r requirements.txt
 
 This scanner stores all scan results in Firebase Realtime Database. To set up Firebase securely:
 
-#### Option 1: Using Environment Variables (Recommended for Production)
+#### Option 1: Using Environment Variables with .env file (Recommended)
 
-For security reasons, it's recommended to use environment variables instead of storing service account keys directly in your code:
+This method uses a .env file for local development and environment variables for production:
 
 1. Create a Firebase project at [https://console.firebase.google.com/](https://console.firebase.google.com/)
 2. Enable Realtime Database in your project
@@ -41,8 +41,28 @@ For security reasons, it's recommended to use environment variables instead of s
    - Go to Project Settings > Service Accounts
    - Click "Generate new private key"
    - Download the JSON file
-4. Set the following environment variables:
+4. Copy the `.env.template` file to `.env`
+   ```bash
+   cp .env.template .env
    ```
+5. Fill in your Firebase credentials in the `.env` file
+
+The `.env` file is already in `.gitignore` to ensure credentials aren't committed to the repository.
+
+#### Option 2: Using System Environment Variables (Recommended for Production)
+
+For production deployment, set the environment variables directly in your system or deployment platform:
+
+1. Set the following environment variables:
+   ```
+   FIREBASE_API_KEY=your_api_key
+   FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+   FIREBASE_DATABASE_URL=https://your_project_id-default-rtdb.firebaseio.com
+   FIREBASE_PROJECT_ID=your_project_id
+   FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+   FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   FIREBASE_APP_ID=your_app_id
+   FIREBASE_MEASUREMENT_ID=your_measurement_id
    FIREBASE_PRIVATE_KEY_ID=your_private_key_id
    FIREBASE_PRIVATE_KEY=your_base64_encoded_private_key
    FIREBASE_CLIENT_EMAIL=your_client_email
