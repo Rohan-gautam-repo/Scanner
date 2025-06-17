@@ -29,16 +29,45 @@ pip install -r requirements.txt
 
 ### Firebase Setup
 
-This scanner now stores all scan results in Firebase Realtime Database. To set up Firebase:
+This scanner stores all scan results in Firebase Realtime Database. To set up Firebase securely:
+
+#### Option 1: Using Environment Variables (Recommended for Production)
+
+For security reasons, it's recommended to use environment variables instead of storing service account keys directly in your code:
 
 1. Create a Firebase project at [https://console.firebase.google.com/](https://console.firebase.google.com/)
 2. Enable Realtime Database in your project
 3. Generate a service account key:
    - Go to Project Settings > Service Accounts
    - Click "Generate new private key"
-   - Save the JSON file as `firebase/serviceAccountKey.json` in the project root
+   - Download the JSON file
+4. Set the following environment variables:
+   ```
+   FIREBASE_PRIVATE_KEY_ID=your_private_key_id
+   FIREBASE_PRIVATE_KEY=your_base64_encoded_private_key
+   FIREBASE_CLIENT_EMAIL=your_client_email
+   FIREBASE_CLIENT_ID=your_client_id
+   ```
+   
+   To encode your private key as base64 (preserves newlines):
+   ```bash
+   # On Windows PowerShell
+   $privateKey = Get-Content -Path "path\to\key.txt" -Raw
+   [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($privateKey))
+   
+   # On Linux/Mac
+   cat path/to/key.txt | base64
+   ```
 
-You can use the template provided at `firebase/serviceAccountKey.template.json` as a reference.
+#### Option 2: Using Service Account Key File (Development Only)
+
+For local development only:
+
+1. Rename `firebase/serviceAccountKey.template.json` to `firebase/serviceAccountKey.json`
+2. Update it with your Firebase service account credentials
+3. Add `firebase/serviceAccountKey.json` to your `.gitignore` file (already done)
+
+**⚠️ WARNING: Never commit service account credentials to Git repositories!**
 
 ## Usage
 
