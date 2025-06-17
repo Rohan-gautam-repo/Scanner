@@ -19,9 +19,9 @@ from .utils import (
 import os
 import uuid
 
-# Import Firebase module
+# Import Firebase service
 try:
-    from .scanner_firebase import ScannerFirebase
+    from firebase.firebase_service import FirebaseService
     HAS_FIREBASE = True
 except ImportError:
     HAS_FIREBASE = False
@@ -51,13 +51,11 @@ class Scanner:
         self.scan_id = None
         if HAS_FIREBASE:
             try:
-                self.firebase = ScannerFirebase()
-                if not self.firebase.is_initialized():
-                    self.logger.error("Failed to initialize Firebase")
+                self.firebase = FirebaseService.get_instance()
+                self.firebase.initialize()
             except Exception as e:
                 self.logger.error(f"Failed to initialize Firebase: {str(e)}")
-        
-        # Configure session
+          # Configure session
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': self.config.get('user_agent')
@@ -268,10 +266,10 @@ class Scanner:
     def _save_results(self):
         """Save scan results"""
         # First save results to Firebase if available
-        if HAS_FIREBASE and self.firebase and self.firebase.is_initialized():
+        if HAS_FIREBASE and self.firebase:
             results = self.get_results()
             try:
-                firebase_result = self.firebase.save_scan_results(self.scan_id, results, self.logger)
+                firebase_result = self.firebase.save_scan_results(self.scan_id, results)
                 if firebase_result and firebase_result.get('success'):
                     self.logger.info(f"Results saved to Firebase with scan ID: {self.scan_id}")
                 else:
@@ -283,8 +281,7 @@ class Scanner:
                 # Fall back to local storage on exception
                 self._save_local_results()
         else:
-            # Use local storage if Firebase is not available
-            self._save_local_results()
+            # Use local storage if Firebase is not available            self._save_local_results()
     
     def _save_local_results(self):
         """Save scan results to local files"""
@@ -350,9 +347,25 @@ class Scanner:
     def get_results(self) -> Dict[str, Any]:
         """Get scan results"""
         return {
-            'summary': self._get_summary(),
+            'summary': {
+                'scan_info': {
+                    'start_time': self.stats.start_time.isoformat(),
+                    'end_time': self.stats.end_time.isoformat() if self.stats.end_time else None,
+                    'duration': self.stats.get_duration(),
+                    'total_urls_scanned': self.stats.total_urls_scanned,
+                    'total_vulnerabilities': len(self.vulnerabilities),
+                    'total_links_scanned': len(self.scanned_links),
+                    'total_forms_scanned': len(self.scanned_forms)
+                },
+                'vulnerabilities_by_type': self.stats.vulnerabilities_by_type,
+                'errors_by_type': self.stats.errors_by_type,
+                'performance_metrics': {
+                    'avg_response_time': self.stats.avg_response_time,
+                    'min_response_time': self.stats.min_response_time,
+                    'max_response_time': self.stats.max_response_time
+                }
+            },
             'vulnerabilities': self.vulnerabilities,
             'scanned_links': self.scanned_links,
-            'scanned_forms': self.scanned_forms,
-            'scanned_urls': list(self.visited_urls)
+            'scanned_forms': self.scanned_forms
         }

@@ -135,7 +135,8 @@ def main():
     
     try:
         # Start scan
-        scanner.start_scan(target_url)
+        scan_id = scanner.start_scan(target_url)
+        print(f"Scan ID: {scan_id}")
         
         # Get results
         results = scanner.get_results()
@@ -170,6 +171,7 @@ def main():
                 print(f"{error_type}: {count}")
         
         print(f"\nDetailed results saved to {output_dir}/detailed_results.json")
+        print(f"Scan ID: {scan_id}")
         
     except Exception as e:
         print(f"Error during scan: {str(e)}")
