@@ -143,22 +143,27 @@ class Scanner:
                     link_data = {
                         'source_url': url,
                         'target_url': link,
-                        'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
-                    }
+                        'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')                    }
                     self.scanned_links.append(link_data)
                     self.logger.link_found(link)
                     if is_same_domain(link, url):
                         self._scan_url(link, depth + 1)
-            
-            # Check security headers
+              # Check security headers
             if self.config.get('scan_headers'):
-                headers = extract_headers(response)
-                if not headers:
-                    self._add_vulnerability('missing_security_headers', url, {
-                        'description': 'No security headers found',
-                        'recommendation': 'Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.',
-                        'severity': 'Medium'
-                    })
+                headers_result = extract_headers(response)
+                missing_headers = headers_result['missing']
+                
+                if missing_headers:
+                    # Report each missing header as a separate vulnerability
+                    for header, description in missing_headers.items():
+                        vuln_type = f"missing_{header.lower().replace('-', '_')}"
+                        self._add_vulnerability(vuln_type, url, {
+                            'description': f"Missing {header}: {description}",
+                            'recommendation': f"Implement the {header} header to improve security",
+                            'severity': 'Medium',
+                            'header_name': header,
+                            'header_description': description
+                        })
             
             # Rate limiting
             if self.config.get('rate_limit') > 0:

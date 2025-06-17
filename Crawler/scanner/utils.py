@@ -134,23 +134,30 @@ def get_error_type(response: requests.Response) -> str:
         return 'client_error'
     return 'unknown'
 
-def extract_headers(response: requests.Response) -> Dict[str, str]:
-    """Extract security-related headers from response"""
-    security_headers = [
-        'X-Frame-Options',
-        'X-Content-Type-Options',
-        'X-XSS-Protection',
-        'Content-Security-Policy',
-        'Strict-Transport-Security',
-        'Referrer-Policy'
-    ]
+def extract_headers(response: requests.Response) -> Dict[str, Dict]:
+    """Extract security-related headers from response and identify missing ones"""
+    security_headers = {
+        'X-Frame-Options': 'Protects against clickjacking attacks',
+        'X-Content-Type-Options': 'Prevents MIME-sniffing attacks',
+        'X-XSS-Protection': 'Provides protection against cross-site scripting',
+        'Content-Security-Policy': 'Controls resources the browser is allowed to load',
+        'Strict-Transport-Security': 'Forces HTTPS connections',
+        'Referrer-Policy': 'Controls how much referrer information is included with requests'
+    }
     
-    headers = {}
-    for header in security_headers:
+    found_headers = {}
+    missing_headers = {}
+    
+    for header, description in security_headers.items():
         if header in response.headers:
-            headers[header] = response.headers[header]
+            found_headers[header] = response.headers[header]
+        else:
+            missing_headers[header] = description
     
-    return headers
+    return {
+        'found': found_headers,
+        'missing': missing_headers
+    }
 
 def is_vulnerable_to_xss(response: requests.Response, payload: str) -> bool:
     """Check if response indicates XSS vulnerability"""
