@@ -26,47 +26,49 @@ const Dashboard = () => {
     navigate('/dashboard/scan-details');
   };
 
-  return (
-    <DashboardLayout>
-      {currentPath === '/dashboard' && (
-        <>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent">
-              Vulnerability Dashboard
-            </h1>
-            <div className="flex gap-3">
-              <button
-                onClick={navigateToScanDetails}
-                className="bg-zinc-800/80 border border-violet-500/20 text-white px-5 py-2.5 rounded-full flex items-center hover:bg-zinc-700/80 transition-all shadow hover:shadow-violet-600/10"
-              >
-                View All Scans
-              </button>
-              <button
-                onClick={() => setShowScanModal(true)}
-                className="bg-gradient-to-r from-violet-600 to-purple-700 text-white px-5 py-2.5 rounded-full flex items-center hover:opacity-90 transition-colors shadow-lg shadow-violet-600/20"
-              >
-                Start New Scan
-              </button>
-            </div>
-          </div>
-
-          {/* Dashboard Content */}
+  const renderContent = () => {
+    switch(currentPath) {
+      case '/dashboard/scan-details':
+        return <ScanDetails />;
+      case '/dashboard/ai-assistant':
+        return <AIAssistant />;
+      case '/dashboard/settings':
+        return <Settings />;
+      default: // Main dashboard
+        return (
           <>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-violet-600 bg-clip-text text-transparent">
+                Vulnerability Dashboard
+              </h1>
+              <div className="flex gap-3">
+                <button
+                  onClick={navigateToScanDetails}
+                  className="bg-zinc-800/80 border border-violet-500/20 text-white px-5 py-2.5 rounded-full flex items-center hover:bg-zinc-700/80 transition-all shadow hover:shadow-violet-600/10"
+                >
+                  View All Scans
+                </button>
+                <button
+                  onClick={() => setShowScanModal(true)}
+                  className="bg-gradient-to-r from-violet-600 to-purple-700 text-white px-5 py-2.5 rounded-full flex items-center hover:opacity-90 transition-colors shadow-lg shadow-violet-600/20"
+                >
+                  Start New Scan
+                </button>
+              </div>
+            </div>
+
+            {/* Dashboard Content */}
             <ScanSummary />
             <VulnerabilityChart />
             <VulnTable />
           </>
-        </>
-      )}
+        );
+    }
+  };
 
-      {/* Scan Details Route */}
-      {currentPath === '/dashboard/scan-details' && <ScanDetails />}
-      
-      {/* AI Assistant Route */}
-      {currentPath === '/dashboard/ai-assistant' && <AIAssistant />}
-      
-      {/* Settings Route */}
-      {currentPath === '/dashboard/settings' && <Settings />}
+  return (
+    <DashboardLayout>
+      {renderContent()}
       
       {/* Scan Modal - available on all routes */}
       <TriggerScanModal

@@ -5,6 +5,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import './App.css';
+import ScanDetails from './components/dashboard/ScanDetails';
+import AIAssistant from './components/dashboard/AIAssistant';
+import Settings from './components/dashboard/Settings';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -37,6 +40,30 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             }
+          />
+          <Route 
+            path="/dashboard/scan-details" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/ai-assistant" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/settings" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
           />
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
