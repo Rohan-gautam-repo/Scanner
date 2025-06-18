@@ -44,6 +44,12 @@ MAIN_PAGE = '''
             <a href="/search">Search</a>
             <a href="/profile">Profile</a>
             <a href="/admin">Admin</a>
+            <a href="/echo">Echo Chamber</a>
+            <a href="/reflected-xss">XSS Test</a>
+            <a href="/dom-xss">DOM XSS</a>
+            <a href="/advanced-xss">Advanced XSS</a>
+            <a href="/template-injection">Template Injection</a>
+            <a href="/chained-xss">Chained XSS</a>
         </div>
 
         <div class="form-section">
@@ -143,7 +149,13 @@ def search():
         users = c.fetchall()
         conn.close()
         
-        return jsonify([{"id": u[0], "username": u[1], "email": u[3]} for u in users])
+        # XSS vulnerability: reflecting search term without sanitization
+        result = f"<h2>Search Results for: {query}</h2><ul>"
+        for u in users:
+            result += f"<li>ID: {u[0]}, Username: {u[1]}, Email: {u[3]}</li>"
+        result += "</ul>"
+        
+        return result
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -162,10 +174,12 @@ def profile():
         conn.close()
         
         if user:
-            return f"User Profile:<br>ID: {user[0]}<br>Username: {user[1]}<br>Email: {user[3]}"
+            # XSS vulnerability: directly reflecting user input without sanitization
+            return f"User Profile:<br>ID: {user[0]}<br>Username: {user[1]}<br>Email: {user[3]}<br>Search History: {user_id}"
         else:
             return "User not found"
     except Exception as e:
+        # XSS vulnerability: error message reflection
         return f"Error: {str(e)}"
 
 @app.route('/register', methods=['POST'])
@@ -227,5 +241,400 @@ def update_profile():
     except Exception as e:
         return f"Error: {str(e)}"
 
+@app.route('/echo', methods=['GET', 'POST'])
+def echo():
+    """
+    Endpoint that echoes back user input - intentionally vulnerable to XSS
+    This demonstrates multiple XSS contexts:
+    1. URL parameter reflection
+    2. Form data reflection
+    3. Input inserted into different HTML contexts
+    """
+    user_input = request.args.get('text', '')
+    form_input = request.form.get('text', '')
+    
+    # If form submitted, use that input instead
+    if form_input:
+        user_input = form_input
+    
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Echo Chamber - {user_input}</title>
+    </head>
+    <body>
+        <h1>Echo Chamber</h1>
+        <div>
+            <form action="/echo" method="POST">
+                <input type="text" name="text" value="{user_input}" placeholder="Enter text to echo">
+                <input type="submit" value="Echo">
+            </form>
+        </div>
+        
+        <div class="result">
+            <h2>You said:</h2>
+            <p>{user_input}</p>
+        </div>
+        
+        <div class="javascript-context">
+            <script>
+                // XSS vulnerability: user input in JavaScript context
+                var userMessage = "{user_input}";
+                document.write("<p>Echo from script: " + userMessage + "</p>");
+            </script>
+        </div>
+        
+        <div class="attribute-context">
+            <!-- XSS vulnerability: user input in HTML attribute context -->
+            <a href="{user_input}">Click me</a>
+            <div style="color: {user_input}">Colored text</div>
+            <img src="image.jpg" onmouseover="alert('{user_input}')" />
+        </div>
+    </body>
+    </html>
+    '''
+    
+    return html
+
+@app.route('/reflected-xss', methods=['GET'])
+def reflected_xss():
+    """
+    Endpoint with various reflected XSS vulnerabilities to test scanner detection
+    """
+    param1 = request.args.get('param1', '')
+    param2 = request.args.get('param2', '')
+    param3 = request.args.get('param3', '')
+    
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>XSS Test Page</title>
+    </head>
+    <body>
+        <h1>XSS Test Page</h1>
+        
+        <!-- Direct injection in HTML context -->
+        <div id="context1">{param1}</div>
+        
+        <!-- Injection in JavaScript string -->
+        <script>
+            var userInput = "{param2}";
+            console.log(userInput);
+        </script>
+        
+        <!-- Injection in HTML attribute -->
+        <a href="{param3}">Click me</a>
+        
+        <!-- Form with vulnerable auto-fill -->
+        <form action="/reflected-xss" method="GET">
+            <input type="text" name="param1" value="{param1}" placeholder="Parameter 1">
+            <input type="text" name="param2" value="{param2}" placeholder="Parameter 2">
+            <input type="text" name="param3" value="{param3}" placeholder="Parameter 3">
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+    </html>
+    '''
+    
+    return html
+
+@app.route('/dom-xss')
+def dom_xss():
+    """
+    Endpoint demonstrating DOM-based XSS vulnerabilities
+    """
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>DOM XSS Test</title>
+    </head>
+    <body>
+        <h1>DOM-based XSS Test</h1>
+        
+        <div>
+            <p>This page is vulnerable to DOM-based XSS attacks.</p>
+            <p>Try adding ?name=&lt;script&gt;alert(1)&lt;/script&gt; to the URL.</p>
+        </div>
+        
+        <div id="greeting"></div>
+        
+        <script>
+            // Vulnerable DOM manipulation
+            function getParameterByName(name) {
+                var url = window.location.href;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+            
+            // Directly insert user input into DOM without sanitization
+            var name = getParameterByName('name');
+            if (name) {
+                document.getElementById('greeting').innerHTML = 'Hello, ' + name + '!';
+            }
+        </script>
+    </body>
+    </html>
+    '''
+
+@app.route('/advanced-xss')
+def advanced_xss():
+    """
+    Endpoint with more advanced XSS vulnerabilities including context-specific attacks
+    and output encoding bypasses
+    """
+    user_input = request.args.get('input', '')
+    context = request.args.get('context', 'html')
+    
+    html_header = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Advanced XSS Testing</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .container { max-width: 800px; margin: 0 auto; }
+            .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Advanced XSS Testing</h1>
+            
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/advanced-xss">Reset</a>
+            </div>
+            
+            <form action="/advanced-xss" method="GET">
+                <input type="text" name="input" value="{}" placeholder="Enter payload">
+                <select name="context">
+                    <option value="html" {}>HTML Context</option>
+                    <option value="js" {}>JavaScript Context</option>
+                    <option value="attr" {}>Attribute Context</option>
+                    <option value="css" {}>CSS Context</option>
+                    <option value="url" {}>URL Context</option>
+                    <option value="all" {}>All Contexts</option>
+                </select>
+                <input type="submit" value="Test">
+            </form>
+            
+            <div class="test-section">
+    '''
+    
+    html_footer = '''
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
+    
+    # Set the selected option
+    html_select = {
+        'html': '',
+        'js': '',
+        'attr': '',
+        'css': '',
+        'url': '',
+        'all': ''
+    }
+    
+    if context in html_select:
+        html_select[context] = 'selected'
+    
+    html_content = html_header.format(
+        user_input,
+        html_select['html'],
+        html_select['js'],
+        html_select['attr'],
+        html_select['css'],
+        html_select['url'],
+        html_select['all']
+    )
+    
+    # Add context-specific vulnerable sections
+    if context == 'html' or context == 'all':
+        html_content += f'''
+        <h2>HTML Context</h2>
+        <div>Your input: {user_input}</div>
+        '''
+    
+    if context == 'js' or context == 'all':
+        html_content += f'''
+        <h2>JavaScript Context</h2>
+        <script>
+            // Vulnerable JavaScript context
+            var userInput = "{user_input}";
+            document.write("<p>Echo from script: " + userInput + "</p>");
+            
+            // Another JavaScript vulnerability with different encoding context
+            var jsonData = {{"userMessage": "{user_input}"}};
+            console.log(jsonData);
+        </script>
+        '''
+    
+    if context == 'attr' or context == 'all':
+        html_content += f'''
+        <h2>Attribute Context</h2>
+        <div data-user="{user_input}">Attribute data</div>
+        <a href="{user_input}">Click me</a>
+        <div onclick="console.log('{user_input}')">Click for attribute-based XSS</div>
+        '''
+    
+    if context == 'css' or context == 'all':
+        html_content += f'''
+        <h2>CSS Context</h2>
+        <style>
+            .user-controlled {{
+                color: {user_input};
+            }}
+            .another-test {{
+                background-image: url("{user_input}");
+            }}
+        </style>
+        <div class="user-controlled">CSS controlled text</div>
+        '''
+    
+    if context == 'url' or context == 'all':
+        html_content += f'''
+        <h2>URL Context</h2>
+        <iframe src="{user_input}" width="300" height="100"></iframe>
+        <object data="{user_input}"></object>
+        '''
+    
+    html_content += html_footer
+    return html_content
+
+@app.route('/template-injection')
+def template_injection():
+    """
+    Endpoint demonstrating template injection vulnerabilities
+    """
+    name = request.args.get('name', 'Guest')
+    template = request.args.get('template', 'Hello, {{ name }}!')
+    
+    # Vulnerable template - directly renders user-provided template string
+    try:
+        from jinja2 import Template
+        rendered = Template(template).render(name=name)
+        result = f"<p>Rendered result: {rendered}</p>"
+    except Exception as e:
+        result = f"<p>Error: {str(e)}</p>"
+    
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Template Injection Test</title>
+    </head>
+    <body>
+        <h1>Template Injection Test</h1>
+        
+        <div>
+            <p>This page is vulnerable to template injection attacks.</p>
+            <p>Try using template parameters that execute code:</p>
+            <code>?template={{{{ 7 * 7 }}}}</code>
+        </div>
+        
+        <form action="/template-injection" method="GET">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="{name}">
+            <br>
+            <label for="template">Template:</label>
+            <input type="text" id="template" name="template" value="{template}" style="width: 300px;">
+            <br>
+            <input type="submit" value="Render">
+        </form>
+        
+        <div>
+            {result}
+        </div>
+        
+        <div>
+            <p>Try these templates:</p>
+            <ul>
+                <li><code>Hello, {{ name }}!</code> - Normal template</li>
+                <li><code>{{ 7 * 7 }}</code> - Simple code execution</li>
+                <li><code>{{ config }}</code> - Configuration leak</li>
+                <li><code>{{ self.__class__.__mro__[1].__subclasses__() }}</code> - Class introspection</li>
+            </ul>
+        </div>
+    </body>
+    </html>
+    '''
+    
+    return html
+
+@app.route('/chained-xss')
+def chained_xss():
+    """
+    Endpoint with multiple parameters that could lead to chained XSS attacks
+    """
+    user_id = request.args.get('id', '')
+    action = request.args.get('action', '')
+    redirect = request.args.get('redirect', '')
+    token = request.args.get('token', '')
+    
+    html = f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Chained XSS Test</title>
+        <script>
+            // Vulnerable redirection with user input
+            function processRedirect() {{
+                var redirectUrl = "{redirect}";
+                if (redirectUrl) {{
+                    window.location = redirectUrl;
+                }}
+            }}
+            
+            // Vulnerable token handling
+            var authToken = "{token}";
+            localStorage.setItem("userToken", authToken);
+            
+            // Vulnerable action handling
+            var userAction = "{action}";
+            if (userAction) {{
+                eval("perform" + userAction + "()");
+            }}
+            
+            function performLogin() {{ console.log("Login action"); }}
+            function performLogout() {{ console.log("Logout action"); }}
+        </script>
+    </head>
+    <body>
+        <h1>Chained XSS Vulnerabilities</h1>
+        
+        <div>
+            <p>User ID: {user_id}</p>
+            <p>Action: {action}</p>
+            <p>Redirect: {redirect}</p>
+            <p>Token: {token}</p>
+        </div>
+        
+        <div>
+            <button onclick="processRedirect()">Process Redirect</button>
+        </div>
+        
+        <form action="/chained-xss" method="GET">
+            <input type="text" name="id" value="{user_id}" placeholder="User ID">
+            <input type="text" name="action" value="{action}" placeholder="Action">
+            <input type="text" name="redirect" value="{redirect}" placeholder="Redirect URL">
+            <input type="text" name="token" value="{token}" placeholder="Token">
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+    </html>
+    '''
+    
+    return html
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000) 
+    app.run(debug=True, port=5000)

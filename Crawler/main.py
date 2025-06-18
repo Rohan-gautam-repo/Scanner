@@ -4,10 +4,10 @@ import os
 import json
 import argparse
 import logging
-from scanner import Scanner, ScannerConfig
-from scanner.logger import ScannerLogger
-from scanner.stats import ScanStats
-from scanner.utils import save_json, is_valid_url
+from crawler.scanner import Scanner, ScannerConfig
+from crawler.scanner.logger import ScannerLogger
+from crawler.scanner.stats import ScanStats
+from crawler.scanner.utils import save_json, is_valid_url
 from datetime import datetime
 
 def setup_logging(verbose: bool = False):
@@ -56,12 +56,23 @@ def print_vulnerability(vuln):
     print(f"Description: {vuln['details']['description']}")
     
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     # Display missing headers for security header vulnerabilities
     if 'header_description' in vuln['details']:
         print(f"Purpose: {vuln['details']['header_description']}")
     
 >>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
+=======
+    # Display purpose and consequences for security header vulnerabilities
+    if 'header_description' in vuln['details']:
+        print(f"Purpose: {vuln['details']['header_description']}")
+    
+    # Display consequences of not fixing the vulnerability
+    if 'consequences' in vuln['details']:
+        print(f"\nWhat could happen if not fixed: {vuln['details']['consequences']}")
+    
+>>>>>>> ed419ba81fb8720660b74fb01cb14edcfca6067f
     if 'form' in vuln['details']:
         print("\nForm Details:")
         print(f"  Action: {vuln['details']['form']['action']}")

@@ -4,6 +4,33 @@ import os
 from typing import Dict, Any
 import json
 
+def load_payloads(filename: str) -> list:
+    """Load payloads from a file in the payloads directory"""
+    payloads_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'payloads')
+    filepath = os.path.join(payloads_dir, filename)
+    
+    try:
+        with open(filepath, 'r') as f:
+            payloads = [line.strip() for line in f if line.strip()]
+        return payloads
+    except FileNotFoundError:
+        print(f"Warning: Payloads file '{filename}' not found. Using default payloads.")
+        if 'sql' in filename.lower():
+            return [
+                "' OR 1=1--",
+                "' OR 1=1#",
+                "' OR 1=1/*"
+            ]
+        elif 'xss' in filename.lower():
+            return [
+                "<script>alert(1)</script>",
+                "<img src=x onerror=alert(1)>",
+                "<svg onload=alert(1)>",
+                "javascript:alert(1)",
+                "<body onload=alert(1)>"
+            ]
+        return []
+
 class ScannerConfig:
     def __init__(self, config_file: str = None):
         self.config: Dict[str, Any] = {
@@ -64,14 +91,9 @@ class ScannerConfig:
                 "' OR 1=1--",
                 "' OR 1=1#",
                 "' OR 1=1/*"
-            ],
-            'xss_payloads': [
-                "<script>alert(1)</script>",
-                "<img src=x onerror=alert(1)>",
-                "<svg onload=alert(1)>",
-                "javascript:alert(1)",
-                "<body onload=alert(1)>"
-            ]
+            ],            # Scanner payloads
+            'sql_payloads': load_payloads('sql.txt'),
+            'xss_payloads': load_payloads('xss.txt')
         }
         
         # Load from environment variables
@@ -139,6 +161,33 @@ class ScannerConfig:
     def get_all(self) -> Dict[str, Any]:
         """Get all configuration values"""
         return self.config.copy()
+
+    def load_payloads(filename: str) -> list:
+        """Load payloads from a file in the payloads directory"""
+        payloads_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'payloads')
+        filepath = os.path.join(payloads_dir, filename)
+        
+        try:
+            with open(filepath, 'r') as f:
+                payloads = [line.strip() for line in f if line.strip()]
+            return payloads
+        except FileNotFoundError:
+            print(f"Warning: Payloads file '{filename}' not found. Using default payloads.")
+            if 'sql' in filename.lower():
+                return [
+                    "' OR 1=1--",
+                    "' OR 1=1#",
+                    "' OR 1=1/*"
+                ]
+            elif 'xss' in filename.lower():
+                return [
+                    "<script>alert(1)</script>",
+                    "<img src=x onerror=alert(1)>",
+                    "<svg onload=alert(1)>",
+                    "javascript:alert(1)",
+                    "<body onload=alert(1)>"
+                ]
+            return []
 
 # Target settings
 TARGET_DOMAIN    = os.getenv("TARGET_DOMAIN", "https://example.com")

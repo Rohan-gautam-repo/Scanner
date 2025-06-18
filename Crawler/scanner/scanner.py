@@ -112,8 +112,7 @@ class Scanner:
             return
         
         if len(self.visited_urls) >= self.config.get('max_pages'):
-            return
-        
+            return        
         url = normalize_url(url)
         if url in self.visited_urls:
             return
@@ -136,6 +135,10 @@ class Scanner:
                 self.stats.add_error(error_type)
                 self.logger.error(f"Error {response.status_code} for {url}")
                 return
+            
+            # Scan for URL parameter XSS vulnerabilities
+            if self.config.get('scan_xss', True):
+                self._scan_url_params_for_xss(url)
             
             # Extract and scan forms
             if self.config.get('scan_forms'):
@@ -168,6 +171,7 @@ class Scanner:
                     self.scanned_links.append(link_data)
                     self.logger.link_found(link)
                     if is_same_domain(link, url):
+<<<<<<< HEAD
                         self._scan_url(link, depth + 1)
 <<<<<<< HEAD
             
@@ -182,20 +186,24 @@ class Scanner:
                     })
 =======
               # Check security headers
+=======
+                        self._scan_url(link, depth + 1)            # Check security headers
+>>>>>>> ed419ba81fb8720660b74fb01cb14edcfca6067f
             if self.config.get('scan_headers'):
                 headers_result = extract_headers(response)
                 missing_headers = headers_result['missing']
                 
                 if missing_headers:
                     # Report each missing header as a separate vulnerability
-                    for header, description in missing_headers.items():
+                    for header, info in missing_headers.items():
                         vuln_type = f"missing_{header.lower().replace('-', '_')}"
                         self._add_vulnerability(vuln_type, url, {
-                            'description': f"Missing {header}: {description}",
+                            'description': f"Missing {header}: {info['description']}",
                             'recommendation': f"Implement the {header} header to improve security",
                             'severity': 'Medium',
                             'header_name': header,
-                            'header_description': description
+                            'header_description': info['description'],
+                            'consequences': info['consequences']
                         })
 >>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
             
@@ -246,22 +254,28 @@ class Scanner:
                 else:
                     response = self.session.post(form['action'], data=data)
                 
-                if is_vulnerable_to_sql_injection(response, payload):
-                    self._add_vulnerability('sql_injection', url, {
+                if is_vulnerable_to_sql_injection(response, payload):                    self._add_vulnerability('sql_injection', url, {
                         'form': form,
                         'payload': payload,
                         'method': form['method'],
                         'description': 'SQL injection vulnerability detected',
                         'severity': 'High',
                         'recommendation': 'Use parameterized queries and input validation',
-                        'input_field': input_field['name']
+                        'input_field': input_field['name'],
+                        'consequences': 'Without proper input validation, attackers could inject malicious SQL commands that might access, modify, or delete data in your database. This could lead to unauthorized access, data theft, data loss, or complete system compromise.'
                     })
             
             except Exception as e:
                 self.logger.error(f"Error testing SQL injection: {str(e)}")
-        
-        # Test XSS
-        for payload in self.config.get('xss_payloads'):
+          # Test XSS
+        try:
+            # Import advanced XSS scanner functionality
+            from .xss_scanner import get_xss_details, XSS_PAYLOADS
+            xss_payloads = XSS_PAYLOADS
+        except ImportError:
+            xss_payloads = self.config.get('xss_payloads')
+            
+        for payload in xss_payloads:
             data = {}
             for input_field in form['inputs']:
                 if input_field['type'] not in ['submit', 'button', 'image']:
@@ -274,18 +288,65 @@ class Scanner:
                     response = self.session.post(form['action'], data=data)
                 
                 if is_vulnerable_to_xss(response, payload):
-                    self._add_vulnerability('xss', url, {
-                        'form': form,
-                        'payload': payload,
-                        'method': form['method'],
-                        'description': 'Cross-site scripting (XSS) vulnerability detected',
-                        'severity': 'High',
-                        'recommendation': 'Implement proper output encoding and input validation',
-                        'input_field': input_field['name']
-                    })
+                    # Use enhanced XSS details if available
+                    try:
+                        xss_details = get_xss_details(response, payload, input_field['name'])
+                        details = {
+                            'form': form,
+                            'payload': payload,
+                            'method': form['method'],
+                            'input_field': input_field['name'],
+                            'description': xss_details['description'],
+                            'severity': xss_details['severity'],
+                            'recommendation': xss_details['recommendation'],
+                            'consequences': xss_details['consequences']
+                        }
+                        
+                        # Add optional fields if present
+                        if 'parameter' in xss_details:
+                            details['parameter'] = xss_details['parameter']
+                        if 'xss_type' in xss_details:
+                            details['xss_type'] = xss_details['xss_type']
+                            
+                    except (ImportError, NameError):
+                        # Fallback to basic details
+                        details = {
+                            'form': form,
+                            'payload': payload,
+                            'method': form['method'],
+                            'description': 'Cross-site scripting (XSS) vulnerability detected',
+                            'severity': 'High',
+                            'recommendation': 'Implement proper output encoding and input validation',
+                            'input_field': input_field['name'],
+                            'consequences': 'Without proper output encoding, attackers could inject malicious JavaScript code into your website that would execute in users\' browsers. This could allow theft of session cookies, credentials, or personal information, redirecting users to malicious sites, or defacing your website.'
+                        }
+                    
+                    self._add_vulnerability('xss', url, details)
+                    break  # Found vulnerability in this form, move to next form
             
             except Exception as e:
                 self.logger.error(f"Error testing XSS: {str(e)}")
+    
+    def _scan_url_params_for_xss(self, url: str):
+        """Scan URL parameters for XSS vulnerabilities"""
+        try:
+            # Import URL parameter scanning function if available
+            from .xss_scanner import scan_url_parameters, analyze_xss_vulnerability
+            
+            # Scan URL parameters
+            vulnerabilities = scan_url_parameters(url, self.session)
+            
+            # Process detected vulnerabilities
+            for vuln in vulnerabilities:
+                # Get detailed analysis
+                details = analyze_xss_vulnerability(vuln)
+                
+                # Add vulnerability to results
+                self._add_vulnerability('reflected_xss', url, details)
+                
+        except ImportError:
+            # Skip advanced URL parameter scanning if the module isn't available
+            pass
     
     def _make_request(self, url: str) -> requests.Response:
         """Make HTTP request with retries"""
