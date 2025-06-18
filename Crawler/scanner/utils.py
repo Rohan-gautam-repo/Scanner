@@ -137,22 +137,40 @@ def get_error_type(response: requests.Response) -> str:
 def extract_headers(response: requests.Response) -> Dict[str, Dict]:
     """Extract security-related headers from response and identify missing ones"""
     security_headers = {
-        'X-Frame-Options': 'Protects against clickjacking attacks',
-        'X-Content-Type-Options': 'Prevents MIME-sniffing attacks',
-        'X-XSS-Protection': 'Provides protection against cross-site scripting',
-        'Content-Security-Policy': 'Controls resources the browser is allowed to load',
-        'Strict-Transport-Security': 'Forces HTTPS connections',
-        'Referrer-Policy': 'Controls how much referrer information is included with requests'
+        'X-Frame-Options': {
+            'description': 'Protects against clickjacking attacks',
+            'consequences': 'Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn\'t intend to, potentially leading to unwanted actions or data theft.'
+        },
+        'X-Content-Type-Options': {
+            'description': 'Prevents MIME-sniffing attacks',
+            'consequences': 'Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn\'t be executable.'
+        },
+        'X-XSS-Protection': {
+            'description': 'Provides protection against cross-site scripting',
+            'consequences': 'Without this header, malicious scripts could be injected into your webpage and execute in users\' browsers, potentially stealing cookies, session tokens, or other sensitive information.'
+        },
+        'Content-Security-Policy': {
+            'description': 'Controls resources the browser is allowed to load',
+            'consequences': 'Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior.'
+        },
+        'Strict-Transport-Security': {
+            'description': 'Forces HTTPS connections',
+            'consequences': 'Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks.'
+        },
+        'Referrer-Policy': {
+            'description': 'Controls how much referrer information is included with requests',
+            'consequences': 'Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity.'
+        }
     }
     
     found_headers = {}
     missing_headers = {}
     
-    for header, description in security_headers.items():
+    for header, info in security_headers.items():
         if header in response.headers:
             found_headers[header] = response.headers[header]
         else:
-            missing_headers[header] = description
+            missing_headers[header] = info
     
     return {
         'found': found_headers,

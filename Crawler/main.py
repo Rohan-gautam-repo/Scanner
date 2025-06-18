@@ -51,9 +51,13 @@ def print_vulnerability(vuln):
     print(f"Severity: {vuln['details']['severity']}")
     print(f"Description: {vuln['details']['description']}")
     
-    # Display missing headers for security header vulnerabilities
+    # Display purpose and consequences for security header vulnerabilities
     if 'header_description' in vuln['details']:
         print(f"Purpose: {vuln['details']['header_description']}")
+    
+    # Display consequences of not fixing the vulnerability
+    if 'consequences' in vuln['details']:
+        print(f"\nWhat could happen if not fixed: {vuln['details']['consequences']}")
     
     if 'form' in vuln['details']:
         print("\nForm Details:")

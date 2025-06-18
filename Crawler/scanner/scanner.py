@@ -147,22 +147,22 @@ class Scanner:
                     self.scanned_links.append(link_data)
                     self.logger.link_found(link)
                     if is_same_domain(link, url):
-                        self._scan_url(link, depth + 1)
-              # Check security headers
+                        self._scan_url(link, depth + 1)            # Check security headers
             if self.config.get('scan_headers'):
                 headers_result = extract_headers(response)
                 missing_headers = headers_result['missing']
                 
                 if missing_headers:
                     # Report each missing header as a separate vulnerability
-                    for header, description in missing_headers.items():
+                    for header, info in missing_headers.items():
                         vuln_type = f"missing_{header.lower().replace('-', '_')}"
                         self._add_vulnerability(vuln_type, url, {
-                            'description': f"Missing {header}: {description}",
+                            'description': f"Missing {header}: {info['description']}",
                             'recommendation': f"Implement the {header} header to improve security",
                             'severity': 'Medium',
                             'header_name': header,
-                            'header_description': description
+                            'header_description': info['description'],
+                            'consequences': info['consequences']
                         })
             
             # Rate limiting
@@ -212,15 +212,15 @@ class Scanner:
                 else:
                     response = self.session.post(form['action'], data=data)
                 
-                if is_vulnerable_to_sql_injection(response, payload):
-                    self._add_vulnerability('sql_injection', url, {
+                if is_vulnerable_to_sql_injection(response, payload):                    self._add_vulnerability('sql_injection', url, {
                         'form': form,
                         'payload': payload,
                         'method': form['method'],
                         'description': 'SQL injection vulnerability detected',
                         'severity': 'High',
                         'recommendation': 'Use parameterized queries and input validation',
-                        'input_field': input_field['name']
+                        'input_field': input_field['name'],
+                        'consequences': 'Without proper input validation, attackers could inject malicious SQL commands that might access, modify, or delete data in your database. This could lead to unauthorized access, data theft, data loss, or complete system compromise.'
                     })
             
             except Exception as e:
@@ -239,15 +239,15 @@ class Scanner:
                 else:
                     response = self.session.post(form['action'], data=data)
                 
-                if is_vulnerable_to_xss(response, payload):
-                    self._add_vulnerability('xss', url, {
+                if is_vulnerable_to_xss(response, payload):                    self._add_vulnerability('xss', url, {
                         'form': form,
                         'payload': payload,
                         'method': form['method'],
                         'description': 'Cross-site scripting (XSS) vulnerability detected',
                         'severity': 'High',
                         'recommendation': 'Implement proper output encoding and input validation',
-                        'input_field': input_field['name']
+                        'input_field': input_field['name'],
+                        'consequences': 'Without proper output encoding, attackers could inject malicious JavaScript code into your website that would execute in users\' browsers. This could allow theft of session cookies, credentials, or personal information, redirecting users to malicious sites, or defacing your website.'
                     })
             
             except Exception as e:
