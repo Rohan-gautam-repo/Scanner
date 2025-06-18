@@ -179,7 +179,12 @@ def extract_headers(response: requests.Response) -> Dict[str, Dict]:
 
 def is_vulnerable_to_xss(response: requests.Response, payload: str) -> bool:
     """Check if response indicates XSS vulnerability"""
-    return payload in response.text
+    try:
+        from .xss_scanner import is_vulnerable_to_xss_advanced
+        return is_vulnerable_to_xss_advanced(response, payload)
+    except ImportError:
+        # Fallback to basic detection if the advanced module isn't available
+        return payload in response.text
 
 def is_vulnerable_to_sql_injection(response: requests.Response, payload: str) -> bool:
     """Check if response indicates SQL injection vulnerability"""

@@ -6,7 +6,10 @@ A comprehensive web scanner tool for detecting common web vulnerabilities includ
 
 - Web crawling with customizable depth
 - SQL injection detection
-- Cross-site scripting (XSS) detection
+- Enhanced Cross-site scripting (XSS) detection
+  - Reflected XSS detection in forms and URL parameters
+  - Comprehensive XSS payload testing
+  - Context-aware vulnerability assessment
 - Missing security headers detection
 - Form scanning and analysis
 - Firebase integration for result storage
@@ -126,6 +129,22 @@ scans/
 ```
 
 Each scan is assigned a unique ID that can be used to retrieve the results later. The scan ID is displayed in the console output after a scan is completed.
+
+## XSS Detection Features
+
+The scanner includes a sophisticated XSS (Cross-Site Scripting) detection module that:
+
+1. **Comprehensive Detection:** Scans both form inputs and URL parameters for XSS vulnerabilities
+2. **Advanced Payloads:** Tests with a comprehensive list of XSS payloads targeting different contexts
+3. **Context Analysis:** Identifies the context where XSS payloads are reflected (script, attribute, HTML)
+4. **Detailed Reporting:** Provides detailed information about detected vulnerabilities including:
+   - Vulnerability type and severity
+   - Affected parameters/inputs
+   - XSS type (script tag, event handler, etc.)
+   - Layman explanation of consequences if not fixed
+5. **Bypass Detection:** Identifies successful attempts to bypass basic XSS filters
+
+The scanner integrates these results with Firebase for centralized vulnerability management.
 
 ## License
 
