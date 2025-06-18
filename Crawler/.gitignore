@@ -4,9 +4,12 @@ __pycache__/
 .env
 *.log
 reports/*.json
+<<<<<<< HEAD
+=======
 scan_results/
 
 # Firebase credentials
 firebase/serviceAccountKey.json
 *serviceAccountKey.json
 !serviceAccountKey.template.json
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851

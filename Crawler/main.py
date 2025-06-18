@@ -33,6 +33,9 @@ def print_vulnerability(vuln):
     print("\n" + "="*80)
     print(f"VULNERABILITY FOUND")
     print("="*80)
+<<<<<<< HEAD
+    print(f"Type: {vuln['type'].upper()}")
+=======
     
     # For security header vulnerabilities, show the specific header name
     if vuln['type'].startswith('missing_'):
@@ -45,12 +48,22 @@ def print_vulnerability(vuln):
     else:
         print(f"Type: {vuln['type'].upper()}")
         
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
     print(f"File: {vuln['file']}")
     print(f"URL: {vuln['url']}")
     print(f"Timestamp: {vuln['timestamp']}")
     print(f"Severity: {vuln['details']['severity']}")
     print(f"Description: {vuln['details']['description']}")
     
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    # Display missing headers for security header vulnerabilities
+    if 'header_description' in vuln['details']:
+        print(f"Purpose: {vuln['details']['header_description']}")
+    
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
+=======
     # Display purpose and consequences for security header vulnerabilities
     if 'header_description' in vuln['details']:
         print(f"Purpose: {vuln['details']['header_description']}")
@@ -59,6 +72,7 @@ def print_vulnerability(vuln):
     if 'consequences' in vuln['details']:
         print(f"\nWhat could happen if not fixed: {vuln['details']['consequences']}")
     
+>>>>>>> ed419ba81fb8720660b74fb01cb14edcfca6067f
     if 'form' in vuln['details']:
         print("\nForm Details:")
         print(f"  Action: {vuln['details']['form']['action']}")
@@ -86,6 +100,9 @@ def print_scan_summary(results):
     print(f"Total Vulnerabilities Found: {scan_info['total_vulnerabilities']}")
     
     print("\nVulnerabilities by Type:")
+<<<<<<< HEAD
+    for vuln_type, count in summary['vulnerabilities_by_type'].items():
+=======
     vuln_by_type = {}
     
     # Group security header vulnerabilities under a common category
@@ -101,6 +118,7 @@ def print_scan_summary(results):
             vuln_by_type[vuln_type.replace('_', ' ').title()] = count
     
     for vuln_type, count in vuln_by_type.items():
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         print(f"  {vuln_type}: {count}")
     
     print("\nPerformance Metrics:")
@@ -168,8 +186,12 @@ def main():
     
     try:
         # Start scan
+<<<<<<< HEAD
+        scanner.start_scan(target_url)
+=======
         scan_id = scanner.start_scan(target_url)
         print(f"Scan ID: {scan_id}")
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         
         # Get results
         results = scanner.get_results()
@@ -204,7 +226,10 @@ def main():
                 print(f"{error_type}: {count}")
         
         print(f"\nDetailed results saved to {output_dir}/detailed_results.json")
+<<<<<<< HEAD
+=======
         print(f"Scan ID: {scan_id}")
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         
     except Exception as e:
         print(f"Error during scan: {str(e)}")

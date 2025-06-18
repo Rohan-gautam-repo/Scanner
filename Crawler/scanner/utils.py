@@ -134,6 +134,25 @@ def get_error_type(response: requests.Response) -> str:
         return 'client_error'
     return 'unknown'
 
+<<<<<<< HEAD
+def extract_headers(response: requests.Response) -> Dict[str, str]:
+    """Extract security-related headers from response"""
+    security_headers = [
+        'X-Frame-Options',
+        'X-Content-Type-Options',
+        'X-XSS-Protection',
+        'Content-Security-Policy',
+        'Strict-Transport-Security',
+        'Referrer-Policy'
+    ]
+    
+    headers = {}
+    for header in security_headers:
+        if header in response.headers:
+            headers[header] = response.headers[header]
+    
+    return headers
+=======
 def extract_headers(response: requests.Response) -> Dict[str, Dict]:
     """Extract security-related headers from response and identify missing ones"""
     security_headers = {
@@ -176,6 +195,7 @@ def extract_headers(response: requests.Response) -> Dict[str, Dict]:
         'found': found_headers,
         'missing': missing_headers
     }
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
 
 def is_vulnerable_to_xss(response: requests.Response, payload: str) -> bool:
     """Check if response indicates XSS vulnerability"""
