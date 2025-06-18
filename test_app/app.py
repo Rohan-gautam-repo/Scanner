@@ -392,15 +392,28 @@ def advanced_xss():
     user_input = request.args.get('input', '')
     context = request.args.get('context', 'html')
     
-    html_header = '''
+    # Set the selected option
+    html_select = {
+        'html': '',
+        'js': '',
+        'attr': '',
+        'css': '',
+        'url': '',
+        'all': ''
+    }
+    
+    if context in html_select:
+        html_select[context] = 'selected'
+    
+    html_header = f'''
     <!DOCTYPE html>
     <html>
     <head>
         <title>Advanced XSS Testing</title>
         <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .container { max-width: 800px; margin: 0 auto; }
-            .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+            body {{ font-family: Arial, sans-serif; margin: 20px; }}
+            .container {{ max-width: 800px; margin: 0 auto; }}
+            .test-section {{ margin: 20px 0; padding: 20px; border: 1px solid #ccc; }}
         </style>
     </head>
     <body>
@@ -413,14 +426,14 @@ def advanced_xss():
             </div>
             
             <form action="/advanced-xss" method="GET">
-                <input type="text" name="input" value="{}" placeholder="Enter payload">
+                <input type="text" name="input" value="{user_input}" placeholder="Enter payload">
                 <select name="context">
-                    <option value="html" {}>HTML Context</option>
-                    <option value="js" {}>JavaScript Context</option>
-                    <option value="attr" {}>Attribute Context</option>
-                    <option value="css" {}>CSS Context</option>
-                    <option value="url" {}>URL Context</option>
-                    <option value="all" {}>All Contexts</option>
+                    <option value="html" {html_select['html']}>HTML Context</option>
+                    <option value="js" {html_select['js']}>JavaScript Context</option>
+                    <option value="attr" {html_select['attr']}>Attribute Context</option>
+                    <option value="css" {html_select['css']}>CSS Context</option>
+                    <option value="url" {html_select['url']}>URL Context</option>
+                    <option value="all" {html_select['all']}>All Contexts</option>
                 </select>
                 <input type="submit" value="Test">
             </form>
@@ -435,28 +448,7 @@ def advanced_xss():
     </html>
     '''
     
-    # Set the selected option
-    html_select = {
-        'html': '',
-        'js': '',
-        'attr': '',
-        'css': '',
-        'url': '',
-        'all': ''
-    }
-    
-    if context in html_select:
-        html_select[context] = 'selected'
-    
-    html_content = html_header.format(
-        user_input,
-        html_select['html'],
-        html_select['js'],
-        html_select['attr'],
-        html_select['css'],
-        html_select['url'],
-        html_select['all']
-    )
+    html_content = html_header
     
     # Add context-specific vulnerable sections
     if context == 'html' or context == 'all':
@@ -521,8 +513,12 @@ def template_injection():
     
     # Vulnerable template - directly renders user-provided template string
     try:
-        from jinja2 import Template
-        rendered = Template(template).render(name=name)
+        # Only import Jinja2 if installed
+        try:
+            from jinja2 import Template
+            rendered = Template(template).render(name=name)
+        except ImportError:
+            rendered = f"Jinja2 not installed. Template would render: {template}"
         result = f"<p>Rendered result: {rendered}</p>"
     except Exception as e:
         result = f"<p>Error: {str(e)}</p>"

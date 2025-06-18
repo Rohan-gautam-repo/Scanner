@@ -4,10 +4,10 @@ import os
 import json
 import argparse
 import logging
-from crawler.scanner import Scanner, ScannerConfig
-from crawler.scanner.logger import ScannerLogger
-from crawler.scanner.stats import ScanStats
-from crawler.scanner.utils import save_json, is_valid_url
+from scanner import Scanner, ScannerConfig
+from scanner.logger import ScannerLogger
+from scanner.stats import ScanStats
+from scanner.utils import save_json, is_valid_url
 from datetime import datetime
 
 def setup_logging(verbose: bool = False):
