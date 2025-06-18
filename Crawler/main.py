@@ -33,13 +33,35 @@ def print_vulnerability(vuln):
     print("\n" + "="*80)
     print(f"VULNERABILITY FOUND")
     print("="*80)
+<<<<<<< HEAD
     print(f"Type: {vuln['type'].upper()}")
+=======
+    
+    # For security header vulnerabilities, show the specific header name
+    if vuln['type'].startswith('missing_'):
+        header_name = vuln['type'].replace('missing_', '').replace('_', '-').upper()
+        if header_name in ['X-FRAME-OPTIONS', 'X-CONTENT-TYPE-OPTIONS', 'X-XSS-PROTECTION', 
+                          'CONTENT-SECURITY-POLICY', 'STRICT-TRANSPORT-SECURITY', 'REFERRER-POLICY']:
+            print(f"Type: MISSING SECURITY HEADER - {header_name}")
+        else:
+            print(f"Type: {vuln['type'].upper()}")
+    else:
+        print(f"Type: {vuln['type'].upper()}")
+        
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
     print(f"File: {vuln['file']}")
     print(f"URL: {vuln['url']}")
     print(f"Timestamp: {vuln['timestamp']}")
     print(f"Severity: {vuln['details']['severity']}")
     print(f"Description: {vuln['details']['description']}")
     
+<<<<<<< HEAD
+=======
+    # Display missing headers for security header vulnerabilities
+    if 'header_description' in vuln['details']:
+        print(f"Purpose: {vuln['details']['header_description']}")
+    
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
     if 'form' in vuln['details']:
         print("\nForm Details:")
         print(f"  Action: {vuln['details']['form']['action']}")
@@ -67,7 +89,25 @@ def print_scan_summary(results):
     print(f"Total Vulnerabilities Found: {scan_info['total_vulnerabilities']}")
     
     print("\nVulnerabilities by Type:")
+<<<<<<< HEAD
     for vuln_type, count in summary['vulnerabilities_by_type'].items():
+=======
+    vuln_by_type = {}
+    
+    # Group security header vulnerabilities under a common category
+    for vuln_type, count in summary['vulnerabilities_by_type'].items():
+        if vuln_type.startswith('missing_'):
+            header_name = vuln_type.replace('missing_', '').replace('_', '-').upper()
+            if header_name in ['X-FRAME-OPTIONS', 'X-CONTENT-TYPE-OPTIONS', 'X-XSS-PROTECTION', 
+                              'CONTENT-SECURITY-POLICY', 'STRICT-TRANSPORT-SECURITY', 'REFERRER-POLICY']:
+                vuln_by_type[f"Missing Security Header - {header_name}"] = count
+            else:
+                vuln_by_type[vuln_type.replace('_', ' ').title()] = count
+        else:
+            vuln_by_type[vuln_type.replace('_', ' ').title()] = count
+    
+    for vuln_type, count in vuln_by_type.items():
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         print(f"  {vuln_type}: {count}")
     
     print("\nPerformance Metrics:")
@@ -135,7 +175,12 @@ def main():
     
     try:
         # Start scan
+<<<<<<< HEAD
         scanner.start_scan(target_url)
+=======
+        scan_id = scanner.start_scan(target_url)
+        print(f"Scan ID: {scan_id}")
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         
         # Get results
         results = scanner.get_results()
@@ -170,6 +215,10 @@ def main():
                 print(f"{error_type}: {count}")
         
         print(f"\nDetailed results saved to {output_dir}/detailed_results.json")
+<<<<<<< HEAD
+=======
+        print(f"Scan ID: {scan_id}")
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         
     except Exception as e:
         print(f"Error during scan: {str(e)}")

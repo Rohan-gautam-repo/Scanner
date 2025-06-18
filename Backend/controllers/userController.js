@@ -20,3 +20,34 @@ const saveUser = async (req, res) => {
 };
 
 module.exports = { saveUser };
+
+
+
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setError('');
+
+  if (!email.includes('@') || password.length < 8) {
+    setError('Valid email and password of 8+ characters required.');
+    return;
+  }
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+
+    //  After successful registration
+    const token = await auth.currentUser.getIdToken();
+
+    await fetch('http://localhost:5000/api/user/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+
+    navigate('/dashboard');
+  } catch (err) {
+    setError(err.message);
+  }
+};

@@ -17,8 +17,6 @@ from .utils import (
     is_vulnerable_to_sql_injection
 )
 import os
-<<<<<<< HEAD
-=======
 import uuid
 
 # Import Firebase module
@@ -28,7 +26,6 @@ try:
 except ImportError:
     HAS_FIREBASE = False
     print("Firebase service not available, falling back to local storage")
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
 
 class Scanner:
     def __init__(self, config: ScannerConfig = None):
@@ -49,8 +46,6 @@ class Scanner:
         self.scanned_links: List[Dict[str, Any]] = []
         self.scanned_forms: List[Dict[str, Any]] = []
         
-<<<<<<< HEAD
-=======
         # Initialize Firebase
         self.firebase = None
         self.scan_id = None
@@ -62,7 +57,6 @@ class Scanner:
             except Exception as e:
                 self.logger.error(f"Failed to initialize Firebase: {str(e)}")
         
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         # Configure session
         self.session = requests.Session()
         self.session.headers.update({
@@ -75,11 +69,7 @@ class Scanner:
                 'https': self.config.get('proxy_url')
             }
     
-<<<<<<< HEAD
-    def start_scan(self, start_url: str):
-=======
     def start_scan(self, start_url: str, scan_id: str = None):
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         """Start the scanning process"""
         self.logger.scan_start(start_url)
         self.stats = ScanStats()  # Reset stats
@@ -87,21 +77,15 @@ class Scanner:
         self.scanned_links = []    # Reset scanned links
         self.scanned_forms = []    # Reset scanned forms
         
-<<<<<<< HEAD
-=======
         # Set scan ID for Firebase or generate one if none provided
         self.scan_id = scan_id if scan_id else str(uuid.uuid4())
         
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         try:
             self._scan_url(start_url, depth=0)
             self.stats.complete()
             self._save_results()
             self.logger.scan_complete(self.stats.get_summary())
-<<<<<<< HEAD
-=======
             return self.scan_id
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         except Exception as e:
             self.logger.error(f"Scan failed: {str(e)}")
             raise
@@ -159,17 +143,12 @@ class Scanner:
                     link_data = {
                         'source_url': url,
                         'target_url': link,
-<<<<<<< HEAD
                         'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
                     }
-=======
-                        'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')                    }
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
                     self.scanned_links.append(link_data)
                     self.logger.link_found(link)
                     if is_same_domain(link, url):
                         self._scan_url(link, depth + 1)
-<<<<<<< HEAD
             
             # Check security headers
             if self.config.get('scan_headers'):
@@ -180,24 +159,6 @@ class Scanner:
                         'recommendation': 'Implement security headers like X-Frame-Options, X-Content-Type-Options, etc.',
                         'severity': 'Medium'
                     })
-=======
-              # Check security headers
-            if self.config.get('scan_headers'):
-                headers_result = extract_headers(response)
-                missing_headers = headers_result['missing']
-                
-                if missing_headers:
-                    # Report each missing header as a separate vulnerability
-                    for header, description in missing_headers.items():
-                        vuln_type = f"missing_{header.lower().replace('-', '_')}"
-                        self._add_vulnerability(vuln_type, url, {
-                            'description': f"Missing {header}: {description}",
-                            'recommendation': f"Implement the {header} header to improve security",
-                            'severity': 'Medium',
-                            'header_name': header,
-                            'header_description': description
-                        })
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
             
             # Rate limiting
             if self.config.get('rate_limit') > 0:
@@ -306,9 +267,6 @@ class Scanner:
     
     def _save_results(self):
         """Save scan results"""
-<<<<<<< HEAD
-        output_dir = self.config.get('output_dir')
-=======
         # First save results to Firebase if available
         if HAS_FIREBASE and self.firebase and self.firebase.is_initialized():
             results = self.get_results()
@@ -332,7 +290,6 @@ class Scanner:
         """Save scan results to local files"""
         output_dir = self.config.get('output_dir')
         os.makedirs(output_dir, exist_ok=True)
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
         
         # Save vulnerabilities
         vuln_file = os.path.join(output_dir, 'vulnerabilities.json')
@@ -347,9 +304,6 @@ class Scanner:
         save_json(self.scanned_forms, forms_file)
         
         # Save scan summary
-<<<<<<< HEAD
-        summary = {
-=======
         summary = self._get_summary()
         summary_file = os.path.join(output_dir, 'scan_summary.json')
         save_json(summary, summary_file)
@@ -374,7 +328,6 @@ class Scanner:
     def _get_summary(self):
         """Get scan summary"""
         return {
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
             'scan_info': {
                 'start_time': self.stats.start_time.isoformat(),
                 'end_time': self.stats.end_time.isoformat() if self.stats.end_time else None,
@@ -382,12 +335,8 @@ class Scanner:
                 'total_urls_scanned': self.stats.total_urls_scanned,
                 'total_vulnerabilities': len(self.vulnerabilities),
                 'total_links_scanned': len(self.scanned_links),
-<<<<<<< HEAD
-                'total_forms_scanned': len(self.scanned_forms)
-=======
                 'total_forms_scanned': len(self.scanned_forms),
                 'scan_id': self.scan_id
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
             },
             'vulnerabilities_by_type': self.stats.vulnerabilities_by_type,
             'errors_by_type': self.stats.errors_by_type,
@@ -397,45 +346,13 @@ class Scanner:
                 'max_response_time': self.stats.max_response_time
             }
         }
-<<<<<<< HEAD
-        summary_file = os.path.join(output_dir, 'scan_summary.json')
-        save_json(summary, summary_file)
-        
-        self.logger.info(f"Results saved to {output_dir}")
-=======
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
     
     def get_results(self) -> Dict[str, Any]:
         """Get scan results"""
         return {
-<<<<<<< HEAD
-            'summary': {
-                'scan_info': {
-                    'start_time': self.stats.start_time.isoformat(),
-                    'end_time': self.stats.end_time.isoformat() if self.stats.end_time else None,
-                    'duration': self.stats.get_duration(),
-                    'total_urls_scanned': self.stats.total_urls_scanned,
-                    'total_vulnerabilities': len(self.vulnerabilities),
-                    'total_links_scanned': len(self.scanned_links),
-                    'total_forms_scanned': len(self.scanned_forms)
-                },
-                'vulnerabilities_by_type': self.stats.vulnerabilities_by_type,
-                'errors_by_type': self.stats.errors_by_type,
-                'performance_metrics': {
-                    'avg_response_time': self.stats.avg_response_time,
-                    'min_response_time': self.stats.min_response_time,
-                    'max_response_time': self.stats.max_response_time
-                }
-            },
-            'vulnerabilities': self.vulnerabilities,
-            'scanned_links': self.scanned_links,
-            'scanned_forms': self.scanned_forms
-        } 
-=======
             'summary': self._get_summary(),
             'vulnerabilities': self.vulnerabilities,
             'scanned_links': self.scanned_links,
             'scanned_forms': self.scanned_forms,
             'scanned_urls': list(self.visited_urls)
         }
->>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851

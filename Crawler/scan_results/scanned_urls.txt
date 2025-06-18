@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 http://127.0.0.1:5000/
 http://127.0.0.1:5000/search
 http://127.0.0.1:5000/profile
 http://127.0.0.1:5000/admin
+=======
+http://cd crawler; python main.py/
+>>>>>>> c193e67f64d37769b8ce864ed2d2ca836620e851
