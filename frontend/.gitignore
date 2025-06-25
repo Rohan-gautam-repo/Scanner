@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+# Vite build cache
+.vite
 
 # Environment variables
 .env
