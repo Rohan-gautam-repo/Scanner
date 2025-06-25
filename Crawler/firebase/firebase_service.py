@@ -75,31 +75,43 @@ class FirebaseService:
         - FIREBASE_CLIENT_EMAIL
         - FIREBASE_CLIENT_ID
         
-        If environment variables are not set, a placeholder is used for local development only.
+        If environment variables are not set, this will raise an error.
         """
         import base64
         
-        # Get service account data from environment variables if available
+        # Get service account data from environment variables
         project_id = config["projectId"]
-        private_key_id = os.environ.get("FIREBASE_PRIVATE_KEY_ID", "placeholder_key_id")
+        private_key_id = os.environ.get("FIREBASE_PRIVATE_KEY_ID", "")
+        
+        # Check if we have the necessary environment variables
+        if not private_key_id:
+            raise ValueError("FIREBASE_PRIVATE_KEY_ID environment variable is not set. Please run setup_firebase_env.py first.")
         
         # Private key should be base64 encoded in env var to preserve newlines
         encoded_private_key = os.environ.get("FIREBASE_PRIVATE_KEY", "")
-        if encoded_private_key:
-            try:
-                # If it's already a private key format (starts with -----BEGIN PRIVATE KEY-----)
-                if encoded_private_key.startswith("-----BEGIN PRIVATE KEY-----"):
-                    private_key = encoded_private_key
-                else:
-                    # Try to decode from base64
-                    private_key = base64.b64decode(encoded_private_key).decode('utf-8')
-            except:
-                private_key = "-----BEGIN PRIVATE KEY-----\nPLACEHOLDER_KEY\n-----END PRIVATE KEY-----\n"
-        else:
-            private_key = "-----BEGIN PRIVATE KEY-----\nPLACEHOLDER_KEY\n-----END PRIVATE KEY-----\n"
+        if not encoded_private_key:
+            raise ValueError("FIREBASE_PRIVATE_KEY environment variable is not set. Please run setup_firebase_env.py first.")
+            
+        try:
+            # If it's already a private key format (starts with -----BEGIN PRIVATE KEY-----)
+            if encoded_private_key.startswith("-----BEGIN PRIVATE KEY-----"):
+                private_key = encoded_private_key
+            else:
+                # Try to decode from base64
+                private_key = base64.b64decode(encoded_private_key).decode('utf-8')
+                
+            # Verify the private key format is correct
+            if not (private_key.startswith("-----BEGIN PRIVATE KEY-----") and 
+                    private_key.strip().endswith("-----END PRIVATE KEY-----")):
+                raise ValueError("Invalid private key format. The key must be in PEM format.")
+        except Exception as e:
+            raise ValueError(f"Error processing private key: {str(e)}")
             
         client_email = os.environ.get("FIREBASE_CLIENT_EMAIL", f"firebase-adminsdk@{project_id}.iam.gserviceaccount.com")
-        client_id = os.environ.get("FIREBASE_CLIENT_ID", "placeholder_client_id")
+        client_id = os.environ.get("FIREBASE_CLIENT_ID", "")
+        
+        if not client_id:
+            raise ValueError("FIREBASE_CLIENT_ID environment variable is not set. Please run setup_firebase_env.py first.")
         
         # Create service account JSON structure
         cred_data = {
@@ -120,15 +132,8 @@ class FirebaseService:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'w') as f:
             json.dump(cred_data, f, indent=2)
-        
-        if all([
-            private_key_id != "placeholder_key_id",
-            "PLACEHOLDER_KEY" not in private_key,
-            client_id != "placeholder_client_id"
-        ]):
-            print("Service account credentials saved from environment variables.")
-        else:
-            print("WARNING: Using placeholder credentials. Set environment variables for production use.")
+            
+        print("Service account credentials saved successfully.")
     
     def save_scan_results(self, scan_id, results):
         """Save scan results to Firebase"""
