@@ -13,6 +13,17 @@ A comprehensive web scanner tool for detecting common web vulnerabilities includ
 - Missing security headers detection
 - Form scanning and analysis
 - Firebase integration for result storage
+- OWASP Top 10 Vulnerability Detection:
+  - A01 - Broken Access Control
+    - Detection of improperly protected restricted areas
+    - Unauthorized access testing
+  - A02 - Cryptographic Failures
+    - HTTPS implementation checking
+    - Insecure cookie attribute detection
+    - TLS version validation
+  - A04 - Insecure Design
+    - CSRF token validation
+    - Rate limiting detection
 
 ## Setup
 

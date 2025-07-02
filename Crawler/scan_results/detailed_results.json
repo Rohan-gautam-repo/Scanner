@@ -1,27 +1,1310 @@
 {
     "summary": {
         "scan_info": {
-            "start_time": "2025-06-17T19:30:53.122888",
-            "end_time": "2025-06-17T19:30:55.143236",
-            "duration": 2.020348,
-            "total_urls_scanned": 1,
-            "total_vulnerabilities": 0,
-            "total_links_scanned": 0,
-            "total_forms_scanned": 0,
-            "scan_id": "63ddae1a-f944-44b0-8cf1-e833b6042b33"
+            "start_time": "2025-06-25T10:29:28.727030",
+            "end_time": "2025-06-25T10:29:30.679654",
+            "duration": 1.952624,
+            "total_urls_scanned": 11,
+            "total_vulnerabilities": 61,
+            "total_links_scanned": 13,
+            "total_forms_scanned": 11,
+            "scan_id": "28a69e50-f132-44dd-88cf-0b1777ee31a2"
         },
-        "vulnerabilities_by_type": {},
-        "errors_by_type": {},
+        "vulnerabilities_by_type": {
+            "xss": 7,
+            "missing_x_frame_options": 9,
+            "missing_x_content_type_options": 9,
+            "missing_x_xss_protection": 9,
+            "missing_content_security_policy": 9,
+            "missing_strict_transport_security": 9,
+            "missing_referrer_policy": 9
+        },
+        "errors_by_type": {
+            "client_error": 2
+        },
         "performance_metrics": {
-            "avg_response_time": 0,
-            "min_response_time": Infinity,
-            "max_response_time": 0
+            "avg_response_time": 0.016454,
+            "min_response_time": 0.007219,
+            "max_response_time": 0.022858
         }
     },
-    "vulnerabilities": [],
-    "scanned_links": [],
-    "scanned_forms": [],
+    "vulnerabilities": [
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:29",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/profile",
+                    "method": "get",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "id",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "\"><script>alert(1)</script>",
+                "method": "get",
+                "input_field": "id",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "id",
+                "xss_type": "script tag"
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/update_profile",
+                    "method": "post",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "user_id",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "new_email",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "\"><script>alert(1)</script>",
+                "method": "post",
+                "input_field": "new_email",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "new_email",
+                "xss_type": "script tag"
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "dom-xss"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/chained-xss",
+                    "method": "get",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "id",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "action",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "redirect",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "token",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "<script>alert(1)</script>",
+                "method": "get",
+                "input_field": "token",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "token",
+                "xss_type": "script tag"
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "chained-xss"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/template-injection",
+                    "method": "get",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "name",
+                            "value": "Guest"
+                        },
+                        {
+                            "type": "text",
+                            "name": "template",
+                            "value": "Hello, {{ name }}!"
+                        }
+                    ]
+                },
+                "payload": "<script>alert(1)</script>",
+                "method": "get",
+                "input_field": "template",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "template",
+                "xss_type": "script tag"
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "template-injection"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/advanced-xss",
+                    "method": "get",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "input",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "context",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "<script>alert(1)</script>",
+                "method": "get",
+                "input_field": "context",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "context",
+                "xss_type": "script tag"
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "advanced-xss"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/echo",
+                    "method": "post",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "text",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "<script>alert(1)</script>",
+                "method": "post",
+                "input_field": "text",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "text",
+                "xss_type": "script tag"
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "echo"
+        },
+        {
+            "type": "xss",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "form": {
+                    "action": "http://127.0.0.1:5000/reflected-xss",
+                    "method": "get",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "param1",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "param2",
+                            "value": ""
+                        },
+                        {
+                            "type": "text",
+                            "name": "param3",
+                            "value": ""
+                        }
+                    ]
+                },
+                "payload": "<script>alert(1)</script>",
+                "method": "get",
+                "input_field": "param3",
+                "description": "Cross-site scripting (XSS) vulnerability detected",
+                "severity": "High",
+                "recommendation": "Implement proper output encoding and input validation",
+                "consequences": "Attackers can inject malicious JavaScript that executes in users' browsers, allowing them to steal cookies and session tokens, capture keystrokes, redirect users to fake websites, or perform actions on behalf of the victim. This could lead to account takeover, data theft, or spreading malware to your users.",
+                "parameter": "param3",
+                "xss_type": "script tag"
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "reflected-xss"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "profile"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "search"
+        },
+        {
+            "type": "missing_x_frame_options",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Frame-Options: Protects against clickjacking attacks",
+                "recommendation": "Implement the X-Frame-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Frame-Options",
+                "header_description": "Protects against clickjacking attacks",
+                "consequences": "Without this header, attackers could embed your site in a malicious webpage and trick users into clicking on elements they didn't intend to, potentially leading to unwanted actions or data theft."
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_x_content_type_options",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-Content-Type-Options: Prevents MIME-sniffing attacks",
+                "recommendation": "Implement the X-Content-Type-Options header to improve security",
+                "severity": "Medium",
+                "header_name": "X-Content-Type-Options",
+                "header_description": "Prevents MIME-sniffing attacks",
+                "consequences": "Without this header, browsers might interpret files as a different type than what you intended, allowing attackers to potentially execute malicious scripts even when they shouldn't be executable."
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_x_xss_protection",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing X-XSS-Protection: Provides protection against cross-site scripting",
+                "recommendation": "Implement the X-XSS-Protection header to improve security",
+                "severity": "Medium",
+                "header_name": "X-XSS-Protection",
+                "header_description": "Provides protection against cross-site scripting",
+                "consequences": "Without this header, malicious scripts could be injected into your webpage and execute in users' browsers, potentially stealing cookies, session tokens, or other sensitive information."
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_content_security_policy",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Content-Security-Policy: Controls resources the browser is allowed to load",
+                "recommendation": "Implement the Content-Security-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Content-Security-Policy",
+                "header_description": "Controls resources the browser is allowed to load",
+                "consequences": "Without this header, your site could load resources from any source, making it vulnerable to script injection attacks that could compromise user data or take control of page behavior."
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_strict_transport_security",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Strict-Transport-Security: Forces HTTPS connections",
+                "recommendation": "Implement the Strict-Transport-Security header to improve security",
+                "severity": "Medium",
+                "header_name": "Strict-Transport-Security",
+                "header_description": "Forces HTTPS connections",
+                "consequences": "Without this header, communications between your site and users might be downgraded to insecure HTTP, allowing attackers to intercept and modify data in transit, or perform man-in-the-middle attacks."
+            },
+            "file": "index.html"
+        },
+        {
+            "type": "missing_referrer_policy",
+            "url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30",
+            "details": {
+                "description": "Missing Referrer-Policy: Controls how much referrer information is included with requests",
+                "recommendation": "Implement the Referrer-Policy header to improve security",
+                "severity": "Medium",
+                "header_name": "Referrer-Policy",
+                "header_description": "Controls how much referrer information is included with requests",
+                "consequences": "Without this header, sensitive information might be leaked in the referrer header when users navigate from your site to other sites, potentially exposing private data or user activity."
+            },
+            "file": "index.html"
+        }
+    ],
+    "scanned_links": [
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/dom-xss",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/chained-xss",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/template-injection",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/advanced-xss",
+            "target_url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/advanced-xss",
+            "target_url": "http://127.0.0.1:5000/advanced-xss",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/echo",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/echo",
+            "target_url": "http://127.0.0.1:5000/image.jpg",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/reflected-xss",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/profile",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/admin",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/",
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "source_url": "http://127.0.0.1:5000/",
+            "target_url": "http://127.0.0.1:5000/search",
+            "timestamp": "2025-06-25 10:29:30"
+        }
+    ],
+    "scanned_forms": [
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/login",
+            "method": "post",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "username",
+                    "value": ""
+                },
+                {
+                    "type": "password",
+                    "name": "password",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:28"
+        },
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/search",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "query",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:29"
+        },
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/profile",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "id",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:29"
+        },
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/register",
+            "method": "post",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "username",
+                    "value": ""
+                },
+                {
+                    "type": "password",
+                    "name": "password",
+                    "value": ""
+                },
+                {
+                    "type": "email",
+                    "name": "email",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:29"
+        },
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/admin",
+            "method": "post",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "admin_id",
+                    "value": ""
+                },
+                {
+                    "type": "password",
+                    "name": "admin_pass",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:29"
+        },
+        {
+            "url": "http://127.0.0.1:5000/",
+            "action": "http://127.0.0.1:5000/update_profile",
+            "method": "post",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "user_id",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "new_email",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "url": "http://127.0.0.1:5000/chained-xss",
+            "action": "http://127.0.0.1:5000/chained-xss",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "id",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "action",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "redirect",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "token",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "url": "http://127.0.0.1:5000/template-injection",
+            "action": "http://127.0.0.1:5000/template-injection",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "name",
+                    "value": "Guest"
+                },
+                {
+                    "type": "text",
+                    "name": "template",
+                    "value": "Hello, {{ name }}!"
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "url": "http://127.0.0.1:5000/advanced-xss",
+            "action": "http://127.0.0.1:5000/advanced-xss",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "input",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "context",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "url": "http://127.0.0.1:5000/echo",
+            "action": "http://127.0.0.1:5000/echo",
+            "method": "post",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "text",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        },
+        {
+            "url": "http://127.0.0.1:5000/reflected-xss",
+            "action": "http://127.0.0.1:5000/reflected-xss",
+            "method": "get",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "param1",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "param2",
+                    "value": ""
+                },
+                {
+                    "type": "text",
+                    "name": "param3",
+                    "value": ""
+                }
+            ],
+            "timestamp": "2025-06-25 10:29:30"
+        }
+    ],
     "scanned_urls": [
-        "http://cd crawler; python main.py/"
+        "http://127.0.0.1:5000/dom-xss",
+        "http://127.0.0.1:5000/image.jpg",
+        "http://127.0.0.1:5000/chained-xss",
+        "http://127.0.0.1:5000/template-injection",
+        "http://127.0.0.1:5000/advanced-xss",
+        "http://127.0.0.1:5000/echo",
+        "http://127.0.0.1:5000/reflected-xss",
+        "http://127.0.0.1:5000/profile",
+        "http://127.0.0.1:5000/admin",
+        "http://127.0.0.1:5000/",
+        "http://127.0.0.1:5000/search"
     ]
 }

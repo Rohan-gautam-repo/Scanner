@@ -62,6 +62,12 @@ class ScannerConfig:
             'scan_links': True,
             'scan_headers': True,
             'scan_cookies': True,
+            'scan_xss': True,
+            
+            # OWASP Top 10 scan options
+            'scan_broken_access': True,  # A01
+            'scan_crypto_failures': True,  # A02
+            'scan_insecure_design': True,  # A04
             
             # Custom headers
             'custom_headers': {},

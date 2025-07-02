@@ -1,19 +1,29 @@
 {
     "scan_info": {
-        "start_time": "2025-06-17T19:30:53.122888",
-        "end_time": "2025-06-17T19:30:55.143236",
-        "duration": 2.020348,
-        "total_urls_scanned": 1,
-        "total_vulnerabilities": 0,
-        "total_links_scanned": 0,
-        "total_forms_scanned": 0,
-        "scan_id": "63ddae1a-f944-44b0-8cf1-e833b6042b33"
+        "start_time": "2025-06-25T10:29:28.727030",
+        "end_time": "2025-06-25T10:29:30.679654",
+        "duration": 1.952624,
+        "total_urls_scanned": 11,
+        "total_vulnerabilities": 61,
+        "total_links_scanned": 13,
+        "total_forms_scanned": 11,
+        "scan_id": "28a69e50-f132-44dd-88cf-0b1777ee31a2"
     },
-    "vulnerabilities_by_type": {},
-    "errors_by_type": {},
+    "vulnerabilities_by_type": {
+        "xss": 7,
+        "missing_x_frame_options": 9,
+        "missing_x_content_type_options": 9,
+        "missing_x_xss_protection": 9,
+        "missing_content_security_policy": 9,
+        "missing_strict_transport_security": 9,
+        "missing_referrer_policy": 9
+    },
+    "errors_by_type": {
+        "client_error": 2
+    },
     "performance_metrics": {
-        "avg_response_time": 0,
-        "min_response_time": Infinity,
-        "max_response_time": 0
+        "avg_response_time": 0.016454,
+        "min_response_time": 0.007219,
+        "max_response_time": 0.022858
     }
 }

@@ -1,8 +1,16 @@
-from flask import Flask, request, render_template_string, jsonify
+from flask import Flask, request, render_template_string, jsonify, session, make_response
 import sqlite3
 import os
+import time
+import uuid
 
 app = Flask(__name__)
+app.secret_key = "insecure_secret_key_for_testing"  # Insecure secret key for testing
+
+# Track login attempts for rate limiting test
+login_attempts = {}
+# Track form submissions for CSRF testing
+form_submissions = []
 
 # Create a simple database
 def init_db():
@@ -50,6 +58,10 @@ MAIN_PAGE = '''
             <a href="/advanced-xss">Advanced XSS</a>
             <a href="/template-injection">Template Injection</a>
             <a href="/chained-xss">Chained XSS</a>
+            <a href="/settings">Settings</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/config">Config</a>
+            <a href="/hidden">Hidden Area</a>
         </div>
 
         <div class="form-section">
@@ -104,6 +116,24 @@ MAIN_PAGE = '''
                 <input type="submit" value="Update">
             </form>
         </div>
+        
+        <div class="form-section">
+            <h2>Update Password (No CSRF Protection)</h2>
+            <form action="/update_password" method="POST">
+                <input type="text" name="user_id" placeholder="User ID">
+                <input type="password" name="new_password" placeholder="New Password">
+                <input type="submit" value="Change Password">
+            </form>
+        </div>
+        
+        <div class="form-section">
+            <h2>Send Message (No Rate Limiting)</h2>
+            <form action="/send_message" method="POST">
+                <input type="text" name="recipient" placeholder="Recipient">
+                <textarea name="message" placeholder="Your message"></textarea>
+                <input type="submit" value="Send Message">
+            </form>
+        </div>
     </div>
 </body>
 </html>
@@ -118,6 +148,17 @@ def login():
     username = request.form.get('username', '')
     password = request.form.get('password', '')
     
+    # Track login attempts for rate limiting tests (no actual rate limiting)
+    client_ip = request.remote_addr
+    if client_ip not in login_attempts:
+        login_attempts[client_ip] = []
+    
+    login_attempts[client_ip].append(time.time())
+    
+    # Set an insecure cookie on login attempt
+    resp = make_response()
+    resp.set_cookie('last_login', str(time.time()), httponly=False, secure=False)
+    
     # Vulnerable to SQL injection
     query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
     
@@ -129,9 +170,13 @@ def login():
         conn.close()
         
         if user:
-            return f"Welcome {user[1]}!"
+            resp = make_response(f"Welcome {user[1]}!")
+            # Set session cookie without proper flags
+            resp.set_cookie('auth', f"user_id={user[0]}", max_age=3600, httponly=False, secure=False)
+            return resp
         else:
-            return "Invalid credentials"
+            resp = make_response("Invalid credentials")
+            return resp
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -248,7 +293,6 @@ def echo():
     This demonstrates multiple XSS contexts:
     1. URL parameter reflection
     2. Form data reflection
-    3. Input inserted into different HTML contexts
     """
     user_input = request.args.get('text', '')
     form_input = request.form.get('text', '')
@@ -632,5 +676,237 @@ def chained_xss():
     
     return html
 
+# -------------- OWASP A01 - Broken Access Control --------------
+
+@app.route('/admin', methods=['GET'])
+def admin_get():
+    """
+    Admin panel - vulnerable to broken access control
+    No authentication check on GET request
+    """
+    # Vulnerable: No authentication check
+    users = []
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users")
+        users = c.fetchall()
+        conn.close()
+    except Exception as e:
+        return f"Error: {str(e)}"
+    
+    result = "<h1>Admin Panel</h1><h2>All Users:</h2><ul>"
+    for user in users:
+        result += f"<li>ID: {user[0]}, Username: {user[1]}, Password: {user[2]}, Email: {user[3]}</li>"
+    result += "</ul>"
+    
+    return result
+
+@app.route('/dashboard')
+def dashboard():
+    """Dashboard - vulnerable to broken access control"""
+    # Vulnerable: No authentication check
+    return """
+    <h1>User Dashboard</h1>
+    <p>Welcome to your dashboard!</p>
+    <div>
+        <h2>User Statistics</h2>
+        <p>Posts: 15</p>
+        <p>Comments: 42</p>
+        <p>Likes: 120</p>
+    </div>
+    """
+
+@app.route('/settings')
+def settings():
+    """Settings page - vulnerable to broken access control"""
+    # Vulnerable: No authentication check
+    return """
+    <h1>User Settings</h1>
+    <form method="POST" action="/update_settings">
+        <label>Email notifications: <input type="checkbox" name="email_notify" checked></label><br>
+        <label>Two-factor authentication: <input type="checkbox" name="2fa"></label><br>
+        <label>Privacy level: 
+            <select name="privacy">
+                <option value="public">Public</option>
+                <option value="friends">Friends Only</option>
+                <option value="private">Private</option>
+            </select>
+        </label><br>
+        <button type="submit">Save Settings</button>
+    </form>
+    """
+
+@app.route('/config')
+def config():
+    """Config page - vulnerable to broken access control"""
+    # Vulnerable: No authentication check
+    return """
+    <h1>Application Configuration</h1>
+    <pre>
+    {
+      "database": {
+        "host": "localhost",
+        "user": "app_user",
+        "password": "db_password_123",
+        "name": "app_db"
+      },
+      "api_keys": {
+        "google_maps": "AIzaSyDz8URW1-X_MJnTNAQEwrwwM0t9_1Abcde",
+        "stripe": "sk_test_abcdefghijklmnopqrstuvwxyz123456789",
+        "mailchimp": "abcdef1234567890abcdef1234567890-us20"
+      },
+      "email": {
+        "smtp_server": "smtp.example.com",
+        "smtp_port": 587,
+        "username": "notifications@example.com",
+        "password": "email_password_456"
+      }
+    }
+    </pre>
+    """
+
+@app.route('/hidden')
+def hidden():
+    """Hidden page - vulnerable to broken access control"""
+    # Vulnerable: No authentication check
+    return """
+    <h1>Hidden Features</h1>
+    <p>This page contains development features that should not be accessible in production.</p>
+    <ul>
+        <li><a href="/debug">Debug Console</a></li>
+        <li><a href="/phpinfo">PHP Info</a></li>
+        <li><a href="/logs">Server Logs</a></li>
+        <li><a href="/reset">Reset Database</a></li>
+    </ul>
+    """
+
+# -------------- OWASP A04 - Insecure Design --------------
+
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    """Update password - vulnerable to CSRF (no CSRF token)"""
+    user_id = request.form.get('user_id', '')
+    new_password = request.form.get('new_password', '')
+    
+    # Record submission for CSRF testing
+    form_submissions.append({
+        'type': 'password_update',
+        'user_id': user_id,
+        'timestamp': time.time()
+    })
+    
+    # Vulnerable to SQL injection too
+    query = f"UPDATE users SET password='{new_password}' WHERE id={user_id}"
+    
+    try:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute(query)
+        conn.commit()
+        conn.close()
+        return "Password updated successfully!"
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    """Send message - vulnerable to CSRF and no rate limiting"""
+    recipient = request.form.get('recipient', '')
+    message = request.form.get('message', '')
+    
+    # Record submission for rate limiting testing
+    form_submissions.append({
+        'type': 'message',
+        'recipient': recipient,
+        'timestamp': time.time()
+    })
+    
+    # No rate limiting implemented
+    return f"Message sent to {recipient}!"
+
+@app.route('/update_settings', methods=['POST'])
+def update_settings():
+    """Update settings - vulnerable to CSRF (no CSRF token)"""
+    # Record submission for CSRF testing
+    form_submissions.append({
+        'type': 'settings_update',
+        'email_notify': request.form.get('email_notify', 'off'),
+        'twofa': request.form.get('2fa', 'off'),
+        'privacy': request.form.get('privacy', 'public'),
+        'timestamp': time.time()
+    })
+    
+    return "Settings updated successfully!"
+
+# -------------- OWASP A02 - Cryptographic Failures --------------
+
+@app.route('/set_insecure_cookie')
+def set_insecure_cookie():
+    """Set insecure cookies without proper flags"""
+    resp = make_response("Cookie has been set! <a href='/'>Go back to home</a>")
+    
+    # Set cookie without Secure flag
+    resp.set_cookie('session_id', str(uuid.uuid4()), httponly=False)
+    
+    # Set cookie without HttpOnly flag
+    resp.set_cookie('user_pref', 'theme=dark', secure=False)
+    
+    # Set cookie without SameSite attribute
+    resp.set_cookie('tracking', 'enabled', max_age=31536000)
+    
+    return resp
+
+# -------------- Debug and Stats Routes --------------
+
+@app.route('/debug/login_attempts')
+def debug_login_attempts():
+    """Debug endpoint to view login attempts"""
+    return jsonify(login_attempts)
+
+@app.route('/debug/form_submissions')
+def debug_form_submissions():
+    """Debug endpoint to view form submissions"""
+    return jsonify(form_submissions)
+
+@app.route('/debug/cookies')
+def debug_cookies():
+    """Debug endpoint to view cookies"""
+    return jsonify(dict(request.cookies))
+
+@app.route('/scanner-info')
+def scanner_info():
+    """Endpoint that provides information about the test app"""
+    info = {
+        "name": "Test Application for OWASP Top 10 Scanner",
+        "version": "1.0.0",
+        "vulnerabilities": [
+            {
+                "id": "A01",
+                "name": "Broken Access Control",
+                "endpoints": ["/admin", "/dashboard", "/settings", "/config", "/hidden"]
+            },
+            {
+                "id": "A02",
+                "name": "Cryptographic Failures",
+                "endpoints": ["/login", "/set_insecure_cookie"]
+            },
+            {
+                "id": "A04", 
+                "name": "Insecure Design",
+                "endpoints": ["/update_password", "/send_message", "/update_settings"]
+            }
+        ]
+    }
+    return jsonify(info)
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    print("=" * 80)
+    print("OWASP Top 10 Vulnerable Test Application")
+    print("This app contains intentional vulnerabilities for testing the web scanner")
+    print("Vulnerable endpoints include:")
+    print("- A01 (Broken Access Control): /admin, /dashboard, /settings, /config, /hidden")
+    print("- A02 (Cryptographic Failures): /login, /set_insecure_cookie")
+    print("- A04 (Insecure Design): /update_password, /send_message, /update_settings")
+    print("=" * 80)
+    app.run(debug=True, port=5000, ssl_context=None)  # Deliberately not using HTTPS

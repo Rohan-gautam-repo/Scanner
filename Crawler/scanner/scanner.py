@@ -19,6 +19,16 @@ from .utils import (
 import os
 import uuid
 
+# Import OWASP Top 10 scanner modules
+try:
+    from .broken_access import check_access_control
+    from .crypto_failures import check_cryptographic_failures
+    from .insecure_design import check_insecure_design
+    HAS_OWASP_SCANNERS = True
+except ImportError:
+    HAS_OWASP_SCANNERS = False
+    print("OWASP scanner modules not available, some checks will be skipped")
+
 # Import Firebase module
 try:
     from .scanner_firebase import ScannerFirebase
@@ -46,6 +56,14 @@ class Scanner:
         self.scanned_links: List[Dict[str, Any]] = []
         self.scanned_forms: List[Dict[str, Any]] = []
         
+        # Configure OWASP scan options with defaults
+        if 'scan_broken_access' not in self.config.get_all():
+            self.config.set('scan_broken_access', True)
+        if 'scan_crypto_failures' not in self.config.get_all():
+            self.config.set('scan_crypto_failures', True)
+        if 'scan_insecure_design' not in self.config.get_all():
+            self.config.set('scan_insecure_design', True)
+        
         # Initialize Firebase
         self.firebase = None
         self.scan_id = None
@@ -69,6 +87,19 @@ class Scanner:
                 'https': self.config.get('proxy_url')
             }
     
+    def _check_broken_access_control(self, start_url: str):
+        """Check for broken access control vulnerabilities (A01)"""
+        if not HAS_OWASP_SCANNERS or not self.config.get('scan_broken_access', True):
+            return
+            
+        self.logger.info("Starting broken access control scan")
+        try:
+            access_vulns = check_access_control(start_url, self.session, self.logger.info)
+            for vuln in access_vulns:
+                self._add_vulnerability(vuln['type'], vuln['url'], vuln['details'])
+        except Exception as e:
+            self.logger.error(f"Error in broken access control scan: {str(e)}")
+    
     def start_scan(self, start_url: str, scan_id: str = None):
         """Start the scanning process"""
         self.logger.scan_start(start_url)
@@ -81,6 +112,10 @@ class Scanner:
         self.scan_id = scan_id if scan_id else str(uuid.uuid4())
         
         try:
+            # Check for broken access control vulnerabilities first
+            self._check_broken_access_control(start_url)
+            
+            # Proceed with regular scanning
             self._scan_url(start_url, depth=0)
             self.stats.complete()
             self._save_results()
@@ -168,6 +203,12 @@ class Scanner:
                             'consequences': info['consequences']
                         })
             
+            # Check for cryptographic failures (A02)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_crypto_failures', True):
+                crypto_vulns = check_cryptographic_failures(url, response, self.logger.info)
+                for vuln in crypto_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
             # Rate limiting
             if self.config.get('rate_limit') > 0:
                 time.sleep(1 / self.config.get('rate_limit'))
@@ -228,7 +269,21 @@ class Scanner:
             
             except Exception as e:
                 self.logger.error(f"Error testing SQL injection: {str(e)}")
-          # Test XSS
+        
+        # Check for insecure design (A04)
+        if HAS_OWASP_SCANNERS and self.config.get('scan_insecure_design', True):
+            try:
+                # Get the response with the form
+                form_url = form['action'] if form['action'].startswith('http') else urljoin(url, form['action'])
+                form_response = self.session.get(form_url, timeout=self.config.get('request_timeout'))
+                
+                insecure_design_vulns = check_insecure_design(url, form, form_response, self.session, self.logger.info)
+                for vuln in insecure_design_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            except Exception as e:
+                self.logger.error(f"Error checking insecure design: {str(e)}")
+          
+        # Test XSS
         try:
             # Import advanced XSS scanner functionality
             from .xss_scanner import get_xss_details, XSS_PAYLOADS

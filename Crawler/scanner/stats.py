@@ -15,7 +15,19 @@ class ScanStats:
         self.total_vulnerabilities = 0
         
         # Detailed metrics
-        self.vulnerabilities_by_type: Dict[str, int] = {}
+        self.vulnerabilities_by_type: Dict[str, int] = {
+            # Default vulnerability types
+            'xss': 0,
+            'sql_injection': 0,
+            
+            # OWASP Top 10 vulnerability types
+            'broken_access_control': 0,  # A01
+            'crypto_failure_no_https': 0,  # A02
+            'crypto_failure_insecure_cookies': 0,  # A02
+            'crypto_failure_outdated_tls': 0,  # A02
+            'insecure_design_csrf': 0,  # A04
+            'insecure_design_no_rate_limiting': 0,  # A04
+        }
         self.errors_by_type: Dict[str, int] = {}
         self.response_codes: Dict[int, int] = {}
         self.scanned_urls: List[str] = []
@@ -105,4 +117,4 @@ class ScanStats:
         
         # Save scanned URLs
         with open(os.path.join(output_dir, 'scanned_urls.txt'), 'w') as f:
-            f.write('\n'.join(self.scanned_urls)) 
+            f.write('\n'.join(self.scanned_urls))

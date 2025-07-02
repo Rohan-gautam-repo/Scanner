@@ -1,1 +1,205 @@
-[]
+[
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/login",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "username",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "password",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:28"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/search",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "query",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:29"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/profile",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "id",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:29"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/register",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "username",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "password",
+                "value": ""
+            },
+            {
+                "type": "email",
+                "name": "email",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:29"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/admin",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "admin_id",
+                "value": ""
+            },
+            {
+                "type": "password",
+                "name": "admin_pass",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:29"
+    },
+    {
+        "url": "http://127.0.0.1:5000/",
+        "action": "http://127.0.0.1:5000/update_profile",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "user_id",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "new_email",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "url": "http://127.0.0.1:5000/chained-xss",
+        "action": "http://127.0.0.1:5000/chained-xss",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "id",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "action",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "redirect",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "token",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "url": "http://127.0.0.1:5000/template-injection",
+        "action": "http://127.0.0.1:5000/template-injection",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "name",
+                "value": "Guest"
+            },
+            {
+                "type": "text",
+                "name": "template",
+                "value": "Hello, {{ name }}!"
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "url": "http://127.0.0.1:5000/advanced-xss",
+        "action": "http://127.0.0.1:5000/advanced-xss",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "input",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "context",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "url": "http://127.0.0.1:5000/echo",
+        "action": "http://127.0.0.1:5000/echo",
+        "method": "post",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "text",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "url": "http://127.0.0.1:5000/reflected-xss",
+        "action": "http://127.0.0.1:5000/reflected-xss",
+        "method": "get",
+        "inputs": [
+            {
+                "type": "text",
+                "name": "param1",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "param2",
+                "value": ""
+            },
+            {
+                "type": "text",
+                "name": "param3",
+                "value": ""
+            }
+        ],
+        "timestamp": "2025-06-25 10:29:30"
+    }
+]

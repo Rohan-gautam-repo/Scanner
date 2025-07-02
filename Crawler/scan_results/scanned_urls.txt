@@ -1,1 +1,11 @@
-http://cd crawler; python main.py/
+http://127.0.0.1:5000/dom-xss
+http://127.0.0.1:5000/image.jpg
+http://127.0.0.1:5000/chained-xss
+http://127.0.0.1:5000/template-injection
+http://127.0.0.1:5000/advanced-xss
+http://127.0.0.1:5000/echo
+http://127.0.0.1:5000/reflected-xss
+http://127.0.0.1:5000/profile
+http://127.0.0.1:5000/admin
+http://127.0.0.1:5000/
+http://127.0.0.1:5000/search

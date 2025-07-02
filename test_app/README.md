@@ -1,6 +1,6 @@
 # Vulnerable Test Application
 
-This is a simple Flask application with intentionally vulnerable endpoints for testing SQL injection scanners.
+This is a simple Flask application with intentionally vulnerable endpoints for testing web vulnerability scanners. It includes vulnerabilities from the OWASP Top 10, including SQL Injection, XSS, Broken Access Control, Cryptographic Failures, and Insecure Design.
 
 ## Setup
 
@@ -28,6 +28,35 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+
+## Vulnerabilities
+
+The application contains the following intentional vulnerabilities:
+
+### A01 - Broken Access Control
+- Unrestricted access to admin panel at `/admin`
+- Sensitive information accessible at `/config`
+- No authentication check for settings at `/settings`
+- Restricted areas available at `/dashboard` and `/hidden`
+
+### A02 - Cryptographic Failures
+- HTTP instead of HTTPS (app runs without SSL)
+- Insecure cookies (missing Secure, HttpOnly, and SameSite flags)
+- Plaintext credentials in configuration
+- Insecure session handling
+
+### A04 - Insecure Design
+- Forms missing CSRF tokens:
+  - `/update_password`
+  - `/update_settings`
+- No rate limiting on sensitive operations:
+  - `/login`
+  - `/send_message`
+
+### Other Vulnerabilities
+- SQL Injection in multiple endpoints
+- Cross-site Scripting (XSS) in multiple endpoints
+- Sensitive data exposure
 
 The application will be available at http://localhost:5000
 

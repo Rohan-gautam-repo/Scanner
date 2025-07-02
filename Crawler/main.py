@@ -30,7 +30,7 @@ def get_target_url() -> str:
 
 def print_vulnerability(vuln):
     """Print vulnerability details in a structured format"""
-    print("\n" + "="*80)
+    print
     print(f"VULNERABILITY FOUND")
     print("="*80)
     
@@ -148,6 +148,11 @@ def main():
     config.set('output_dir', output_dir)
     config.set('log_file', os.path.join(output_dir, 'scanner.log'))
     config.set('max_depth', 3)
+    
+    # Configure OWASP Top 10 checks
+    config.set('scan_broken_access', True)  # A01
+    config.set('scan_crypto_failures', True)  # A02
+    config.set('scan_insecure_design', True)  # A04
     config.set('max_pages', 100)
     config.set('threads', 4)
     config.set('scan_delay', 1.0)

@@ -1,1 +1,67 @@
-[]
+[
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/dom-xss",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/chained-xss",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/template-injection",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/advanced-xss",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/advanced-xss",
+        "target_url": "http://127.0.0.1:5000/",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/advanced-xss",
+        "target_url": "http://127.0.0.1:5000/advanced-xss",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/echo",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/echo",
+        "target_url": "http://127.0.0.1:5000/image.jpg",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/reflected-xss",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/profile",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/admin",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/",
+        "timestamp": "2025-06-25 10:29:30"
+    },
+    {
+        "source_url": "http://127.0.0.1:5000/",
+        "target_url": "http://127.0.0.1:5000/search",
+        "timestamp": "2025-06-25 10:29:30"
+    }
+]
