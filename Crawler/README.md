@@ -24,6 +24,32 @@ A comprehensive web scanner tool for detecting common web vulnerabilities includ
   - A04 - Insecure Design
     - CSRF token validation
     - Rate limiting detection
+  - A05 - Security Misconfiguration
+    - Missing security headers detection
+    - Open directory listing identification
+    - Verbose error messages/stack traces detection
+    - Default configuration files checking
+  - A06 - Vulnerable and Outdated Components
+    - JavaScript/CSS library version extraction
+    - Known vulnerable library version detection
+    - Outdated and deprecated component identification
+  - A07 - Identification and Authentication Failures
+    - Login form protection analysis
+    - Missing CAPTCHA/rate limiting detection
+    - Default credential checking
+    - Missing 2FA for admin interfaces
+  - A08 - Software and Data Integrity Failures
+    - Missing Subresource Integrity (SRI) checks
+    - Insecure script loading (HTTP vs HTTPS)
+    - Insecure package source detection
+  - A09 - Security Logging and Monitoring Failures
+    - Login monitoring/audit trail detection
+    - Failed login attempt monitoring
+    - Account lockout testing
+  - A10 - Server-Side Request Forgery (SSRF)
+    - URL parameter SSRF testing
+    - Form input SSRF testing
+    - API endpoint SSRF vulnerability detection
 
 ## Setup
 

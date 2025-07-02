@@ -24,6 +24,12 @@ try:
     from .broken_access import check_access_control
     from .crypto_failures import check_cryptographic_failures
     from .insecure_design import check_insecure_design
+    from .security_misconfiguration import check_security_misconfiguration
+    from .vulnerable_components import check_vulnerable_components
+    from .auth_failures import check_authentication_failures
+    from .integrity_failures import check_integrity_failures
+    from .logging_monitoring import check_logging_monitoring
+    from .ssrf import check_ssrf
     HAS_OWASP_SCANNERS = True
 except ImportError:
     HAS_OWASP_SCANNERS = False
@@ -63,6 +69,18 @@ class Scanner:
             self.config.set('scan_crypto_failures', True)
         if 'scan_insecure_design' not in self.config.get_all():
             self.config.set('scan_insecure_design', True)
+        if 'scan_security_misconfigurations' not in self.config.get_all():
+            self.config.set('scan_security_misconfigurations', True)
+        if 'scan_vulnerable_components' not in self.config.get_all():
+            self.config.set('scan_vulnerable_components', True)
+        if 'scan_auth_failures' not in self.config.get_all():
+            self.config.set('scan_auth_failures', True)
+        if 'scan_integrity_failures' not in self.config.get_all():
+            self.config.set('scan_integrity_failures', True)
+        if 'scan_logging_monitoring' not in self.config.get_all():
+            self.config.set('scan_logging_monitoring', True)
+        if 'scan_ssrf' not in self.config.get_all():
+            self.config.set('scan_ssrf', True)
         
         # Initialize Firebase
         self.firebase = None
@@ -207,6 +225,42 @@ class Scanner:
             if HAS_OWASP_SCANNERS and self.config.get('scan_crypto_failures', True):
                 crypto_vulns = check_cryptographic_failures(url, response, self.logger.info)
                 for vuln in crypto_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for security misconfigurations (A05)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_security_misconfigurations', True):
+                misconfig_vulns = check_security_misconfiguration(url, response, self.logger.info)
+                for vuln in misconfig_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for vulnerable components (A06)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_vulnerable_components', True):
+                component_vulns = check_vulnerable_components(url, response, self.logger.info)
+                for vuln in component_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for authentication failures (A07)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_auth_failures', True):
+                auth_vulns = check_authentication_failures(url, response, self.logger.info)
+                for vuln in auth_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for software and data integrity failures (A08)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_integrity_failures', True):
+                integrity_vulns = check_integrity_failures(url, response, self.logger.info)
+                for vuln in integrity_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for security logging and monitoring failures (A09)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_logging_monitoring', True):
+                logging_vulns = check_logging_monitoring(url, response, self.session, self.logger.info)
+                for vuln in logging_vulns:
+                    self._add_vulnerability(vuln['type'], url, vuln['details'])
+            
+            # Check for SSRF vulnerabilities (A10)
+            if HAS_OWASP_SCANNERS and self.config.get('scan_ssrf', True):
+                ssrf_vulns = check_ssrf(url, response, self.session, self.logger.info)
+                for vuln in ssrf_vulns:
                     self._add_vulnerability(vuln['type'], url, vuln['details'])
             
             # Rate limiting

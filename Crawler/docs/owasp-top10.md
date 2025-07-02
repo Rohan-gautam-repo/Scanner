@@ -98,6 +98,64 @@ The scanner identifies insecure design issues like missing CSRF protection and r
 - Detects:
   - Forms missing CSRF tokens
   - Absence of rate limiting on critical functions
+
+### Example Vulnerability
+
+```json
+{
+    "type": "insecure_design_no_csrf",
+    "url": "http://example.com/update-profile",
+    "details": {
+        "form_action": "/update-profile",
+        "description": "Form missing CSRF protection token",
+        "severity": "Medium",
+        "recommendation": "Implement CSRF tokens for all state-changing operations",
+        "consequences": "Attackers can trick users into performing unwanted actions while authenticated"
+    }
+}
+```
+
+## A05: Security Misconfiguration
+
+The scanner checks for security misconfigurations including missing security headers, open directory listing, and verbose error messages.
+
+### What it checks:
+
+- Missing security headers (Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, HSTS)
+- Open directory listing (pages with "Index of" title)
+- Verbose error messages or stack traces
+- Default configuration files or credentials
+
+### Implementation Details
+
+- Module: `security_misconfiguration.py`
+- Main Function: `check_security_misconfiguration(url, response, log_func)`
+- Helper Functions:
+  - `check_missing_headers(response)`
+  - `has_directory_listing(response)`
+  - `has_verbose_errors(response)`
+  - `has_default_configs(url, response)`
+- Detects:
+  - Missing security headers
+  - Exposed directory listings
+  - Detailed error messages
+  - Default configuration files
+
+### Example Vulnerability
+
+```json
+{
+    "type": "security_misconfiguration_missing_header",
+    "url": "http://example.com/login",
+    "details": {
+        "header": "Content-Security-Policy",
+        "description": "Missing Content-Security-Policy header: Helps prevent XSS and data injection attacks",
+        "severity": "High",
+        "recommendation": "Implement a strict Content-Security-Policy",
+        "consequences": "Without CSP, the site is more vulnerable to cross-site scripting (XSS) attacks"
+    }
+}
+```
   - Insecure authentication workflows
 
 ### Example Vulnerability
